@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>In-App Reader - Perpustakaan Digital Blora</title>
+    <link rel="icon" type="image/gif" href="https://upload.wikimedia.org/wikipedia/commons/4/43/Lambang_Kabupaten_Blora.gif">
+
+    <!-- Bootstrap 5 CSS & Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- PDF.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #0f172a;
+            color: #f1f5f9;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .reader-header {
+            height: 56px;
+            background: #1e293b;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 100;
+        }
+
+        .reader-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            max-width: 40%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .reader-container {
+            height: calc(100% - 56px);
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 16px;
+            background: #0f172a;
+        }
+
+        #pdfCanvas {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            background: white;
+            border-radius: 6px;
+            max-width: 100%;
+        }
+
+        #driveIframe {
+            width: 100%;
+            max-width: 900px;
+            height: calc(100vh - 100px);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: white;
+        }
+
+        .btn-reader {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .btn-reader:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-reader:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .reader-progress {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .reader-progress-bar {
+            height: 100%;
+            background: #2563eb;
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+
+<body oncontextmenu="return false;">
+
+    <!-- TOP CONTROL BAR -->
+    <header class="reader-header">
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-reader" id="btnBack" title="Kembali">
+                <i class="bi bi-arrow-left"></i>
+            </button>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/43/Lambang_Kabupaten_Blora.gif" 
+                 alt="Lambang Blora" 
+                 style="width: 22px; height: 26px; object-fit: contain;">
+            <span class="reader-title" id="bookHeaderTitle">Memuat Buku...</span>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="d-flex align-items-center gap-2" id="canvasControls">
+            <button class="btn btn-reader" id="btnPrev" disabled>
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <span class="small font-monospace px-2" id="pageNumberDisplay">Hal 1 / 1</span>
+            <button class="btn btn-reader" id="btnNext" disabled>
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Zoom & Fullscreen -->
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-reader" id="btnZoomOut" title="Perkecil">
+                <i class="bi bi-zoom-out"></i>
+            </button>
+            <button class="btn btn-reader" id="btnZoomIn" title="Perbesar">
+                <i class="bi bi-zoom-in"></i>
+            </button>
+            <button class="btn btn-reader" id="btnFullscreen" title="Layar Penuh">
+                <i class="bi bi-arrows-fullscreen"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- READER CANVAS / IFRAME CONTAINER -->
+    <main class="reader-container" id="readerContainer">
+        <!-- Canvas PDF jika file upload langsung -->
+        <canvas id="pdfCanvas"></canvas>
+
+        <!-- Iframe Viewer jika file menggunakan Google Drive File ID / Preview link -->
+        <iframe id="driveIframe" style="display: none;" allow="autoplay"></iframe>
+
+        <!-- Fallback Notice jika file belum ditautkan -->
+        <div id="drivePlaceholder" class="p-5 text-center rounded-4 border border-secondary border-opacity-25" style="max-width: 500px; display: none; background: #1e293b;">
+            <i class="bi bi-file-earmark-pdf fs-1 text-primary mb-3 d-block"></i>
+            <h5 class="fw-bold mb-2">Berkas Digital Sedang Dipersiapkan</h5>
+            <p class="text-muted small mb-4" id="driveDesc">
+                Berkas buku ini sedang dalam proses verifikasi tautan di server perpustakaan.
+            </p>
+            <button class="btn btn-primary btn-sm px-3" onclick="simulateReadingProgress()">
+                <i class="bi bi-bookmark-check me-1"></i> Catat Halaman Baca
+            </button>
+        </div>
+    </main>
+
+    <!-- BOTTOM PROGRESS BAR -->
+    <div class="reader-progress">
+        <div class="reader-progress-bar" id="readingProgressBar"></div>
+    </div>
+
+    <!-- Script Reader -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        import { SUPABASE_URL, SUPABASE_ANON_KEY, getDriveEmbedUrl } from './js/config.js';
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        function extractBookId() {
+            // 1. Coba dari query search ?book_id= atau ?id=
+            const urlParams = new URLSearchParams(window.location.search);
+            let id = urlParams.get('book_id') || urlParams.get('id');
+            if (id && id !== 'undefined' && id !== 'null') return id;
+
+            // 2. Coba dari hash routing #book_id= atau #id=
+            if (window.location.hash) {
+                const hashClean = window.location.hash.replace(/^#/, '');
+                const hashParams = new URLSearchParams(hashClean.includes('?') ? hashClean.split('?')[1] : hashClean);
+                id = hashParams.get('book_id') || hashParams.get('id');
+                if (id && id !== 'undefined' && id !== 'null') return id;
+            }
+
+            // 3. Coba dari sessionStorage jika baru saja dibuka dari detail atau katalog
+            const storedId = sessionStorage.getItem('last_active_book_id');
+            if (storedId && storedId !== 'undefined' && storedId !== 'null') return storedId;
+
+            return null;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let bookId = extractBookId();
+        const perpusParam = urlParams.get('perpus');
+
+        let currentUser = null;
+        let currentMember = null;
+        let currentLibraryId = null;
+
+        let pdfDoc = null;
+        let pageNum = 1;
+        let totalPages = 1;
+        let scale = 1.2;
+        let isRendering = false;
+
+        document.getElementById('btnBack').onclick = () => {
+            if (perpusParam) {
+                window.location.href = `detail-buku.html?id=${bookId || ''}&perpus=${encodeURIComponent(perpusParam)}`;
+            } else {
+                window.location.href = `detail-buku.html?id=${bookId || ''}`;
+            }
+        };
+
+        async function initReader() {
+            // Jika bookId belum ada di URL, coba cari buku aktif pertama sebagai fallback
+            if (!bookId) {
+                try {
+                    const { data: fallbackBook } = await supabase
+                        .from('books')
+                        .select('id')
+                        .eq('status', 'ACTIVE')
+                        .order('created_at', { ascending: false })
+                        .limit(1)
+                        .maybeSingle();
+
+                    if (fallbackBook && fallbackBook.id) {
+                        bookId = fallbackBook.id;
+                        window.history.replaceState({}, '', `reader.html?book_id=${bookId}${perpusParam ? '&perpus=' + encodeURIComponent(perpusParam) : ''}`);
+                    }
+                } catch (e) {
+                    console.warn('Fallback reader fetch failed:', e);
+                }
+            }
+
+            if (!bookId) {
+                alert('ID Buku tidak ditemukan pada tautan (URL). Pastikan Anda membuka buku dari Katalog atau Dashboard.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const { data: { user } } = await supabase.auth.getUser();
+            currentUser = user;
+
+            if (currentUser) {
+                const { data: member } = await supabase
+                    .from('members')
+                    .select('id, library_id')
+                    .eq('user_id', currentUser.id)
+                    .maybeSingle();
+
+                if (member) {
+                    currentMember = member;
+                    currentLibraryId = member.library_id;
+                }
+            }
+
+            loadBookAndFile();
+        }
+
+        async function loadBookAndFile() {
+            try {
+                const { data: book, error } = await supabase
+                    .from('books')
+                    .select('*')
+                    .eq('id', bookId)
+                    .maybeSingle();
+
+                if (error || !book) {
+                    alert('Buku tidak ditemukan di database.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                document.title = `Membaca: ${book.title} - Perpus Blora`;
+                document.getElementById('bookHeaderTitle').textContent = book.title;
+
+                if (currentMember) {
+                    const { data: history } = await supabase
+                        .from('reading_history')
+                        .select('last_page')
+                        .eq('member_id', currentMember.id)
+                        .eq('book_id', book.id)
+                        .maybeSingle();
+
+                    if (history && history.last_page) {
+                        pageNum = history.last_page;
+                    }
+                }
+
+                const pdfSrc = book.pdf_file_id;
+
+                if (pdfSrc) {
+                    // Jika URL Supabase Storage langsung atau file PDF lokal/publik
+                    if (pdfSrc.startsWith('http') && !pdfSrc.includes('drive.google.com')) {
+                        loadPdfFromUrl(pdfSrc);
+                    } else {
+                        // Jika Google Drive File ID atau Drive link
+                        const embedUrl = getDriveEmbedUrl(pdfSrc);
+                        if (embedUrl) {
+                            showDriveIframe(embedUrl);
+                        } else {
+                            showPlaceholder(book);
+                        }
+                    }
+                } else {
+                    showPlaceholder(book);
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert('Gagal memuat reader: ' + err.message);
+            }
+        }
+
+        function showDriveIframe(embedUrl) {
+            document.getElementById('pdfCanvas').style.display = 'none';
+            document.getElementById('canvasControls').style.opacity = '0.3';
+            document.getElementById('canvasControls').style.pointerEvents = 'none';
+
+            const iframe = document.getElementById('driveIframe');
+            iframe.src = embedUrl;
+            iframe.style.display = 'block';
+
+            updateReadingProgress(50, 100);
+            syncReadingHistory(1, 100);
+        }
+
+        function showPlaceholder(book) {
+            document.getElementById('pdfCanvas').style.display = 'none';
+            const ph = document.getElementById('drivePlaceholder');
+            ph.style.display = 'block';
+            document.getElementById('driveDesc').textContent = `Membaca "${book.title}". Silakan hubungi admin untuk melengkapi tautan berkas.`;
+        }
+
+        window.simulateReadingProgress = function() {
+            pageNum += 5;
+            syncReadingHistory(pageNum, 100);
+            alert(`Halaman ${pageNum} dicatat dalam riwayat membaca Anda!`);
+        };
+
+        async function loadPdfFromUrl(url) {
+            try {
+                const loadingTask = pdfjsLib.getDocument(url);
+                pdfDoc = await loadingTask.promise;
+                totalPages = pdfDoc.numPages;
+
+                document.getElementById('btnNext').disabled = false;
+                document.getElementById('btnPrev').disabled = false;
+
+                renderPage(pageNum);
+            } catch (err) {
+                console.warn('PDF.js loading error:', err);
+                showPlaceholder({ title: document.getElementById('bookHeaderTitle').textContent });
+            }
+        }
+
+        async function renderPage(num) {
+            if (!pdfDoc || isRendering) return;
+            isRendering = true;
+
+            const page = await pdfDoc.getPage(num);
+            const canvas = document.getElementById('pdfCanvas');
+            const ctx = canvas.getContext('2d');
+            const viewport = page.getViewport({ scale });
+
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
+
+            await page.render(renderContext).promise;
+            isRendering = false;
+
+            document.getElementById('pageNumberDisplay').textContent = `Hal ${num} / ${totalPages}`;
+            document.getElementById('btnPrev').disabled = (num <= 1);
+            document.getElementById('btnNext').disabled = (num >= totalPages);
+
+            updateReadingProgress(num, totalPages);
+            syncReadingHistory(num, totalPages);
+        }
+
+        function updateReadingProgress(current, total) {
+            const pct = Math.min(100, Math.round((current / (total || 1)) * 100));
+            document.getElementById('readingProgressBar').style.width = `${pct}%`;
+        }
+
+        async function syncReadingHistory(page, total) {
+            if (!currentMember || !bookId) return;
+            const progressPct = Math.min(100, Math.round((page / (total || 1)) * 100));
+            const now = new Date().toISOString();
+
+            try {
+                const { data: existing } = await supabase
+                    .from('reading_history')
+                    .select('id')
+                    .eq('member_id', currentMember.id)
+                    .eq('book_id', bookId)
+                    .maybeSingle();
+
+                if (existing) {
+                    await supabase
+                        .from('reading_history')
+                        .update({
+                            last_page: page,
+                            progress_percent: progressPct,
+                            last_read_at: now,
+                            library_id: currentLibraryId
+                        })
+                        .eq('id', existing.id);
+                } else {
+                    await supabase
+                        .from('reading_history')
+                        .insert({
+                            member_id: currentMember.id,
+                            book_id: bookId,
+                            library_id: currentLibraryId,
+                            last_page: page,
+                            progress_percent: progressPct,
+                            started_at: now,
+                            last_read_at: now
+                        });
+                }
+            } catch (err) {
+                console.error('Error saving reading history:', err);
+            }
+        }
+
+        document.getElementById('btnPrev').onclick = () => {
+            if (pageNum > 1) {
+                pageNum--;
+                renderPage(pageNum);
+            }
+        };
+
+        document.getElementById('btnNext').onclick = () => {
+            if (pdfDoc && pageNum < totalPages) {
+                pageNum++;
+                renderPage(pageNum);
+            }
+        };
+
+        document.getElementById('btnZoomIn').onclick = () => {
+            scale += 0.2;
+            renderPage(pageNum);
+        };
+
+        document.getElementById('btnZoomOut').onclick = () => {
+            if (scale > 0.6) {
+                scale -= 0.2;
+                renderPage(pageNum);
+            }
+        };
+
+        document.getElementById('btnFullscreen').onclick = () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        };
+
+        initReader();
+    </script>
+</body>
+
+</html>

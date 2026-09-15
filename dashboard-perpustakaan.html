@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard Perpustakaan Mitra - Blora</title>
+    <link rel="icon" type="image/gif" href="https://upload.wikimedia.org/wikipedia/commons/4/43/Lambang_Kabupaten_Blora.gif">
+
+    <!-- Bootstrap 5 CSS & Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-accent: #2563eb;
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --bg-canvas: #f8fafc;
+            --card-border: rgba(226, 232, 240, 0.8);
+        }
+
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: var(--bg-canvas);
+            color: #1e293b;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            color: #94a3b8;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            font-size: 0.92rem;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar nav a:hover {
+            background: var(--sidebar-hover);
+            color: white;
+        }
+
+        .sidebar nav a.active {
+            color: white;
+            background: rgba(37, 99, 235, 0.15);
+            border-left-color: var(--primary-accent);
+        }
+
+        .modern-card {
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .stat-card {
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            background: white;
+            padding: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .library-header {
+            border-radius: 16px;
+            background: white;
+            border: 1px solid var(--card-border);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+
+            <!-- SIDEBAR (No Upload Buku, No Upload PDF) -->
+            <div class="col-md-3 col-lg-2 sidebar d-flex flex-column">
+                <div class="sidebar-brand">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/43/Lambang_Kabupaten_Blora.gif" 
+                             alt="Lambang Kabupaten Blora" 
+                             style="width: 32px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+                        <div>
+                            <h5 class="fw-bold mb-0 text-white">Perpustakaan Digital</h5>
+                            <small class="text-white-50">Kabupaten Blora</small>
+                        </div>
+                    </div>
+                    <span class="badge bg-primary bg-opacity-25 text-primary border border-primary-subtle text-uppercase" style="font-size: 0.68rem;">LIBRARY ADMIN</span>
+                </div>
+
+                <nav class="mt-3 flex-grow-1">
+                    <a href="#" class="active">
+                        <i class="bi bi-grid-1x2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#katalog">
+                        <i class="bi bi-book"></i>
+                        <span>Koleksi Terpusat</span>
+                    </a>
+                    <a href="#informasi">
+                        <i class="bi bi-info-circle"></i>
+                        <span>Profil Perpustakaan</span>
+                    </a>
+                    <a href="#portalLink" id="sidebarPortalLink" target="_blank">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                        <span>Buka Portal Publik</span>
+                    </a>
+                </nav>
+
+                <div class="p-3 border-top border-secondary border-opacity-25">
+                    <a href="#" id="logoutBtn" class="d-flex align-items-center gap-2 text-danger text-decoration-none px-3 py-2 rounded">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-md-9 col-lg-10 p-4 p-md-5">
+
+                <!-- HEADER INFO PERPUSTAKAAN -->
+                <div class="library-header p-4 mb-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="stat-icon bg-primary bg-opacity-10 text-primary fs-3">
+                                <i class="bi bi-buildings"></i>
+                            </div>
+                            <div>
+                                <h4 class="fw-bold mb-1" id="libraryName">Memuat nama perpustakaan...</h4>
+                                <div class="text-muted small d-flex flex-wrap align-items-center gap-2">
+                                    <span>Kode: <strong id="libraryCode">-</strong></span>
+                                    <span>•</span>
+                                    <span>Link Portal Publik Anda: 
+                                        <a href="#" id="libraryFullUrlLink" target="_blank" class="fw-bold text-primary text-decoration-none">
+                                            <span id="libraryFullUrlText">Memuat link...</span>
+                                            <i class="bi bi-box-arrow-up-right ms-1 small"></i>
+                                        </a>
+                                    </span>
+                                    <button type="button" class="btn btn-xs btn-light border py-0 px-2 small text-secondary" id="btnCopyPortalUrl" title="Salin Tautan Portal">
+                                        <i class="bi bi-clipboard"></i> Salin Link
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span id="libraryStatusBadge" class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">ACTIVE</span>
+                            <a href="#" id="btnViewPortal" target="_blank" class="btn btn-primary d-flex align-items-center gap-1 shadow-sm">
+                                <i class="bi bi-box-arrow-up-right"></i> Buka Portal Publik
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WELCOME -->
+                <div class="mb-4">
+                    <h5 class="fw-bold" style="color: #0f172a;">Selamat datang, <span id="adminName" class="text-primary">Admin</span>!</h5>
+                    <p class="text-muted mb-0">
+                        Kelola keanggotaan dan pantau aktivitas pembaca perpustakaan Anda. Seluruh koleksi buku digital disediakan langsung oleh Admin Pusat Kabupaten Blora.
+                    </p>
+                </div>
+
+                <!-- ZERO REDUNDANCY NOTICE -->
+                <div class="alert alert-info border-info-subtle rounded-3 d-flex align-items-center gap-3 mb-4">
+                    <i class="bi bi-info-circle-fill fs-4 text-primary"></i>
+                    <div class="small">
+                        <strong>Katalog Terpusat Aktif:</strong> Perpustakaan Anda terhubung langsung ke Master Katalog Buku Kabupaten Blora. Anda tidak perlu mengunggah PDF secara manual karena seluruh judul buku langsung tersedia untuk seluruh anggota Anda.
+                    </div>
+                </div>
+
+                <!-- STATISTIK -->
+                <div class="row g-4 mb-4">
+                    <!-- Buku Tersedia (Dari Master Katalog books) -->
+                    <div class="col-md-4">
+                        <div class="stat-card d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="text-muted small fw-semibold text-uppercase">Buku Tersedia</div>
+                                <h3 class="fw-bold mt-2 mb-0" id="bookCount">0</h3>
+                                <small class="text-muted">Katalog Pusat Blora</small>
+                            </div>
+                            <div class="stat-icon bg-success-subtle text-success">
+                                <i class="bi bi-book"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Pembaca (Bebas Hambatan / Tanpa Anggota) -->
+                    <div class="col-md-4">
+                        <div class="stat-card d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="text-muted small fw-semibold text-uppercase">Akses Pembaca</div>
+                                <h4 class="fw-bold mt-2 mb-0 text-primary">Publik Bebas</h4>
+                                <small class="text-muted">Siapapun bisa langsung baca</small>
+                            </div>
+                            <div class="stat-icon bg-primary-subtle text-primary">
+                                <i class="bi bi-unlock"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Riwayat Pembacaan -->
+                    <div class="col-md-4">
+                        <div class="stat-card d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="text-muted small fw-semibold text-uppercase">Buku Dibaca</div>
+                                <h3 class="fw-bold mt-2 mb-0" id="readingCount">0</h3>
+                                <small class="text-muted">Aktivitas membaca</small>
+                            </div>
+                            <div class="stat-icon bg-purple-subtle text-purple" style="background: #faf5ff; color: #9333ea;">
+                                <i class="bi bi-book-half"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INFORMASI LENGKAP PERPUSTAKAAN -->
+                <div class="modern-card mb-4" id="informasi">
+                    <div class="p-4 border-bottom">
+                        <h5 class="fw-bold mb-0" style="color: #0f172a;">Informasi Profil Perpustakaan</h5>
+                    </div>
+                    <div class="p-4">
+                        <div class="row g-3 small">
+                            <div class="col-md-6">
+                                <span class="text-muted d-block">Nama Perpustakaan</span>
+                                <strong class="fs-6" id="infoName">-</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="text-muted d-block">Jenis Perpustakaan</span>
+                                <span class="badge bg-light text-primary border" id="infoType">-</span>
+                            </div>
+                            <div class="col-md-4">
+                                <span class="text-muted d-block">Desa / Kelurahan</span>
+                                <strong id="infoVillage">-</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <span class="text-muted d-block">Kecamatan</span>
+                                <strong id="infoDistrict">-</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <span class="text-muted d-block">Kabupaten</span>
+                                <strong>Kabupaten Blora</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="text-muted d-block">Email Kontak</span>
+                                <div id="infoEmail">-</div>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="text-muted d-block">Nomor Telepon</span>
+                                <div id="infoPhone">-</div>
+                            </div>
+                            <div class="col-12">
+                                <span class="text-muted d-block">Alamat Lengkap</span>
+                                <div id="infoAddress">-</div>
+                            </div>
+                        </div>
+                    </div>
+                <!-- KOLEKSI BUKU TERPUSAT (ZERO REDUNDANCY) -->
+                <div class="modern-card mb-4" id="katalog">
+                    <div class="p-4 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <h5 class="fw-bold mb-1" style="color: #0f172a;">
+                                <i class="bi bi-book text-primary me-2"></i>Koleksi Buku Terpusat Kabupaten Blora
+                            </h5>
+                            <p class="text-muted small mb-0">Seluruh buku disediakan oleh Admin Pusat Blora dan otomatis siap dibaca oleh seluruh anggota Anda.</p>
+                        </div>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill" id="catalogBadge">0 Judul Buku</span>
+                    </div>
+                    <div class="p-4">
+                        <div class="row g-3" id="mitraBookList">
+                            <div class="col-12 text-center py-4 text-muted">
+                                <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                                Memuat koleksi buku pusat...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Dashboard Perpustakaan -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        import { SUPABASE_URL, SUPABASE_ANON_KEY, slugify, escapeHtml } from './js/config.js';
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function loadDashboard() {
+            // LANGSUNG MUAT KOLEKSI BUKU PUSAT TERLEBIH DAHULU (ZERO DELAY)
+            loadCentralBooks('');
+
+            // Check auth
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Check profile & role
+            const { data: profile, error: profileError } = await supabase
+                .from('profiles')
+                .select('id, full_name, email, role, status')
+                .eq('id', user.id)
+                .single();
+
+            let userRole = profile?.role;
+
+            // Cari relasi perpustakaan melalui library_admins
+            let adminRel = null;
+            try {
+                const { data: relData } = await supabase
+                    .from('library_admins')
+                    .select(`
+                        library_id, status,
+                        libraries (
+                            id, library_code, name, library_type, address, village, district, phone, email, status
+                        )
+                    `)
+                    .eq('user_id', user.id)
+                    .maybeSingle();
+                adminRel = relData;
+            } catch (e) {
+                console.warn('Query library_admins error:', e);
+            }
+
+            let lib = adminRel?.libraries;
+
+            // Jika belum ada di library_admins, cari dari tabel libraries berdasarkan email
+            if (!lib && user.email) {
+                const { data: libByEmail } = await supabase
+                    .from('libraries')
+                    .select('id, library_code, name, library_type, address, village, district, phone, email, status')
+                    .eq('email', user.email)
+                    .maybeSingle();
+
+                if (libByEmail) {
+                    lib = libByEmail;
+                }
+            }
+
+            // Jika masih belum ada, coba cari lewat tabel members jika user pernah terdaftar di suatu perpus
+            if (!lib) {
+                const { data: memData } = await supabase
+                    .from('members')
+                    .select('library_id, libraries(id, library_code, name, library_type, address, village, district, phone, email, status)')
+                    .eq('user_id', user.id)
+                    .maybeSingle();
+                if (memData?.libraries) {
+                    lib = memData.libraries;
+                }
+            }
+
+            // Fallback terakhir: Ambil perpustakaan pertama yang aktif jika user mendaftar lewat form perpus
+            if (!lib) {
+                const { data: anyLib } = await supabase
+                    .from('libraries')
+                    .select('id, library_code, name, library_type, address, village, district, phone, email, status')
+                    .eq('status', 'ACTIVE')
+                    .order('created_at', { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
+                if (anyLib) {
+                    lib = anyLib;
+                }
+            }
+
+            // Auto-link perpustakaan jika belum ada
+            if (lib) {
+                try {
+                    await supabase.from('library_admins').upsert({
+                        user_id: user.id,
+                        library_id: lib.id,
+                        role: 'ADMIN',
+                        status: 'ACTIVE'
+                    }, { onConflict: 'user_id,library_id' });
+                } catch (e) {
+                    console.warn('Auto-link library admin notice:', e);
+                }
+            }
+
+            if (!lib) {
+                alert('Data perpustakaan belum terdaftar atau tidak ditemukan.');
+                return;
+            }
+            const libSlug = slugify(lib.name);
+
+            // Display Header Info
+            document.getElementById('libraryName').textContent = lib.name;
+            document.getElementById('libraryCode').textContent = lib.library_code;
+
+            // Public portal links (Lengkap dengan domain origin agar jelas)
+            const origin = window.location.origin;
+            const pathname = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            const fullPortalUrl = `${origin}${pathname}index.html?perpus=${encodeURIComponent(libSlug)}`;
+            const portalRelUrl = `index.html?perpus=${encodeURIComponent(libSlug)}`;
+
+            document.getElementById('libraryFullUrlText').textContent = portalRelUrl;
+            document.getElementById('libraryFullUrlLink').href = portalRelUrl;
+            document.getElementById('btnViewPortal').href = portalRelUrl;
+            document.getElementById('sidebarPortalLink').href = portalRelUrl;
+
+            // Tombol Salin Link Portal
+            const btnCopy = document.getElementById('btnCopyPortalUrl');
+            if (btnCopy) {
+                btnCopy.onclick = () => {
+                    navigator.clipboard.writeText(fullPortalUrl).then(() => {
+                        btnCopy.innerHTML = '<i class="bi bi-check2 text-success"></i> Tersalin!';
+                        setTimeout(() => {
+                            btnCopy.innerHTML = '<i class="bi bi-clipboard"></i> Salin Link';
+                        }, 2000);
+                    }).catch(() => {
+                        prompt('Salin tautan portal perpustakaan Anda berikut:', fullPortalUrl);
+                    });
+                };
+            }
+
+            document.getElementById('infoName').textContent = lib.name;
+            document.getElementById('infoType').textContent = lib.library_type || '-';
+            document.getElementById('infoVillage').textContent = lib.village || '-';
+            document.getElementById('infoDistrict').textContent = lib.district || '-';
+            document.getElementById('infoPhone').textContent = lib.phone || '-';
+            document.getElementById('infoEmail').textContent = lib.email || '-';
+            document.getElementById('infoAddress').textContent = lib.address || '-';
+
+            // 1. TAMPILKAN LANGSUNG KOLEKSI BUKU PUSAT TERLEBIH DAHULU (INSTANT LOAD)
+            loadCentralBooks(libSlug);
+
+            // 2. LOAD STATISTIK SECARA ASINKRON (NON-BLOCKING)
+            Promise.allSettled([
+                supabase.from('books').select('*', { count: 'exact', head: true }).eq('status', 'ACTIVE'),
+                supabase.from('members').select('*', { count: 'exact', head: true }).eq('library_id', lib.id),
+                supabase.from('reading_history').select('*', { count: 'exact', head: true }).eq('library_id', lib.id)
+            ]).then(([bookRes, memberRes, readingRes]) => {
+                if (bookRes.status === 'fulfilled' && bookRes.value.count !== undefined) {
+                    document.getElementById('bookCount').textContent = bookRes.value.count || 0;
+                }
+                if (readingRes.status === 'fulfilled' && readingRes.value.count !== undefined) {
+                    document.getElementById('readingCount').textContent = readingRes.value.count || 0;
+                }
+            }).catch(e => console.warn('Stat load warning:', e));
+        }
+
+        async function loadCentralBooks(libSlug) {
+            const container = document.getElementById('mitraBookList');
+            try {
+                const { data: books, error } = await supabase
+                    .from('books')
+                    .select(`
+                        id, book_code, isbn, title, author, publisher, publication_year,
+                        cover_file_id, pdf_file_id, status,
+                        categories ( id, name )
+                    `)
+                    .eq('status', 'ACTIVE')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                document.getElementById('catalogBadge').textContent = `${(books || []).length} Judul Buku`;
+
+                if (!books || books.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-12 text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+                            Belum ada katalog buku aktif dari Admin Pusat.
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = '';
+                books.forEach(b => {
+                    const col = document.createElement('div');
+                    col.className = 'col-sm-6 col-md-4 col-xl-3';
+                    const coverUrl = b.cover_file_id && b.cover_file_id.startsWith('http') ? b.cover_file_id : null;
+                    const coverHtml = coverUrl 
+                        ? `<img src="${coverUrl}" alt="${escapeHtml(b.title)}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px 8px 0 0;" onerror="this.outerHTML='<div class=\\\'p-4 text-center text-muted bg-light\\\' style=\\\'height:160px;\\\'>📚</div>'">`
+                        : `<div class="p-4 text-center text-muted bg-light d-flex align-items-center justify-content-center" style="height: 160px; border-radius: 8px 8px 0 0;"><i class="bi bi-book fs-1 text-secondary"></i></div>`;
+
+                    col.innerHTML = `
+                        <div class="card h-100 border rounded-3 overflow-hidden shadow-sm">
+                            ${coverHtml}
+                            <div class="card-body p-3 d-flex flex-column">
+                                <span class="badge bg-light text-primary border align-self-start mb-2" style="font-size: 0.7rem;">
+                                    ${escapeHtml(b.categories ? b.categories.name : 'Umum')}
+                                </span>
+                                <h6 class="fw-bold mb-1 text-truncate" title="${escapeHtml(b.title)}">${escapeHtml(b.title)}</h6>
+                                <p class="text-muted small mb-2 text-truncate">${escapeHtml(b.author || 'Penulis Anonim')}</p>
+                                <div class="mt-auto pt-2 border-top d-flex gap-2">
+                                    <a href="detail-buku.html?id=${b.id}${libSlug ? '&perpus=' + encodeURIComponent(libSlug) : ''}" target="_blank" class="btn btn-sm btn-outline-secondary flex-grow-1">
+                                        <i class="bi bi-info-circle"></i> Info
+                                    </a>
+                                    <a href="reader.html?book_id=${b.id}${libSlug ? '&perpus=' + encodeURIComponent(libSlug) : ''}" target="_blank" class="btn btn-sm btn-primary flex-grow-1">
+                                        <i class="bi bi-book"></i> Baca
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(col);
+                });
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<div class="col-12 text-danger">Gagal memuat buku: ${err.message}</div>`;
+            }
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        });
+
+        loadDashboard();
+    </script>
+</body>
+
+</html>

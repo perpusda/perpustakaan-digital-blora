@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pendaftaran Perpustakaan - Kabupaten Blora</title>
+    <link rel="icon" type="image/gif" href="https://upload.wikimedia.org/wikipedia/commons/4/43/Lambang_Kabupaten_Blora.gif">
+
+    <!-- Bootstrap 5 CSS & Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+        }
+
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #0f172a;
+            min-height: 100vh;
+        }
+
+        .register-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .form-control-clean {
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 0.92rem;
+            transition: all 0.2s;
+        }
+
+        .form-control-clean:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-modern-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-modern-primary:hover {
+            background-color: var(--primary-hover);
+            color: white;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <div class="card register-card border-0">
+                    <div class="card-body p-4 p-md-5">
+
+                        <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/4/43/Lambang_Kabupaten_Blora.gif" 
+                                 alt="Lambang Kabupaten Blora" 
+                                 style="width: 48px; height: 56px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
+                            <div>
+                                <h3 class="fw-bold mb-1" style="letter-spacing: -0.02em;">Pendaftaran Perpustakaan Mitra</h3>
+                                <p class="text-muted mb-0">Perpustakaan Digital Kabupaten Blora (Sekolah, Desa, Komunitas)</p>
+                            </div>
+                        </div>
+
+                        <div id="alertBox"></div>
+
+                        <form id="registerForm">
+                            <h6 class="fw-bold text-uppercase text-secondary mb-3 mt-4" style="font-size: 0.78rem; letter-spacing: 0.05em;">
+                                1. Data Profil Perpustakaan
+                            </h6>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">Nama Perpustakaan <span class="text-danger">*</span></label>
+                                <input type="text" id="libraryName" class="form-control form-control-clean" required placeholder="Contoh: Perpustakaan SMP Negeri 1 Blora">
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Jenis Perpustakaan <span class="text-danger">*</span></label>
+                                    <select id="libraryType" class="form-select form-control-clean" required>
+                                        <option value="">Pilih Jenis Perpustakaan</option>
+                                        <option value="SEKOLAH">Sekolah (SD/SMP/SMA/SMK)</option>
+                                        <option value="DESA">Desa / Kelurahan</option>
+                                        <option value="KOMUNITAS">Komunitas / Taman Bacaan</option>
+                                        <option value="UMUM">Umum</option>
+                                        <option value="KHUSUS">Khusus</option>
+                                        <option value="LAINNYA">Lainnya</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Nomor Telepon Perpustakaan</label>
+                                    <input type="text" id="phone" class="form-control form-control-clean" placeholder="0296-xxxxxx / 08xxxxxxxx">
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Desa / Kelurahan</label>
+                                    <input type="text" id="village" class="form-control form-control-clean" placeholder="Nama desa atau kelurahan">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Kecamatan</label>
+                                    <input type="text" id="district" class="form-control form-control-clean" placeholder="Kecamatan di Kab. Blora">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">Alamat Lengkap</label>
+                                <textarea id="address" class="form-control form-control-clean" rows="2" placeholder="Jalan, RT/RW, nomor gedung..."></textarea>
+                            </div>
+
+                            <h6 class="fw-bold text-uppercase text-secondary mb-3 mt-4 pt-2 border-top" style="font-size: 0.78rem; letter-spacing: 0.05em;">
+                                2. Akun Pengelola (Library Admin)
+                            </h6>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Nama Penanggung Jawab / Admin <span class="text-danger">*</span></label>
+                                    <input type="text" id="adminName" class="form-control form-control-clean" required placeholder="Nama lengkap petugas">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">No. HP Pengelola</label>
+                                    <input type="text" id="adminPhone" class="form-control form-control-clean" placeholder="08xxxxxxxxxx">
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Email Login <span class="text-danger">*</span></label>
+                                    <input type="email" id="adminEmail" class="form-control form-control-clean" required placeholder="email@sekolah.sch.id / desa.id">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Password Akun <span class="text-danger">*</span></label>
+                                    <input type="password" id="password" class="form-control form-control-clean" required placeholder="Minimal 6 karakter">
+                                </div>
+                            </div>
+
+                            <button type="submit" id="registerBtn" class="btn btn-modern-primary w-100">
+                                Daftarkan Perpustakaan Sekarang
+                            </button>
+
+                            <div class="text-center mt-4 pt-2 small text-muted">
+                                Sudah memiliki akun pengelola perpustakaan? 
+                                <a href="login.html" class="text-primary fw-semibold text-decoration-none ms-1">Masuk ke Dashboard</a>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Pendaftaran -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        import { SUPABASE_URL, SUPABASE_ANON_KEY, escapeHtml } from './js/config.js';
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const form = document.getElementById('registerForm');
+        const alertBox = document.getElementById('alertBox');
+        const button = document.getElementById('registerBtn');
+
+        function showAlert(msg, type = 'danger') {
+            alertBox.innerHTML = `
+                <div class="alert alert-${type} rounded-3 py-2 mb-4 small" role="alert">
+                    ${msg}
+                </div>
+            `;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const libraryName = document.getElementById('libraryName').value.trim();
+            const libraryType = document.getElementById('libraryType').value;
+            const village = document.getElementById('village').value.trim();
+            const district = document.getElementById('district').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const adminName = document.getElementById('adminName').value.trim();
+            const adminPhone = document.getElementById('adminPhone').value.trim();
+            const adminEmail = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (password.length < 6) {
+                showAlert('Password minimal 6 karakter.');
+                return;
+            }
+
+            button.disabled = true;
+            button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Mendaftarkan...';
+            alertBox.innerHTML = '';
+
+            try {
+                // 1. Buat user Supabase Auth
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email: adminEmail,
+                    password: password,
+                    options: { 
+                        data: { 
+                            full_name: adminName
+                        } 
+                    }
+                });
+
+                if (authError) throw authError;
+
+                // Pastikan session aktif (login langsung jika signUp tidak otomatis mengembalikan session)
+                let user = authData?.user;
+                if (!authData.session) {
+                    const { data: signData, error: signErr } = await supabase.auth.signInWithPassword({
+                        email: adminEmail,
+                        password: password
+                    });
+                    if (signErr) {
+                        console.warn('Sign-in fallback error:', signErr);
+                    } else if (signData?.user) {
+                        user = signData.user;
+                    }
+                }
+
+                // 2. Daftarkan perpustakaan via RPC register_library
+                // (Fungsi SQL register_library di Supabase yang bertugas mengaitkan perpustakaan dan mengubah role menjadi LIBRARY_ADMIN secara aman dengan SECURITY DEFINER)
+                const { data: result, error: registerError } = await supabase.rpc('register_library', {
+                    p_name: libraryName,
+                    p_library_type: libraryType,
+                    p_address: address || null,
+                    p_village: village || null,
+                    p_district: district || null,
+                    p_regency: 'Blora',
+                    p_phone: phone || null,
+                    p_email: adminEmail,
+                    p_admin_name: adminName,
+                    p_admin_phone: adminPhone || null
+                });
+
+                if (registerError) throw registerError;
+
+                localStorage.setItem('userRole', 'LIBRARY_ADMIN');
+                localStorage.setItem('userName', adminName);
+
+                showAlert(`
+                    <strong>Pendaftaran Berhasil!</strong><br>
+                    Perpustakaan: <strong>${escapeHtml(result.library_name || libraryName)}</strong><br>
+                    Kode Perpustakaan: <strong>${escapeHtml(result.library_code || '-')}</strong><br><br>
+                    Akun Anda langsung aktif sebagai <strong>Admin Perpustakaan</strong>. Mengalihkan ke dashboard...
+                `, 'success');
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard-perpustakaan.html';
+                }, 2000);
+
+            } catch (err) {
+                console.error(err);
+                showAlert(err.message || 'Terjadi kesalahan saat pendaftaran.');
+                button.disabled = false;
+                button.innerHTML = 'Daftarkan Perpustakaan Sekarang';
+            }
+        });
+    </script>
+</body>
+
+</html>

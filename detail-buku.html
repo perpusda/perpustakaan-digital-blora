@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Detail Buku - Perpustakaan Digital Blora</title>
+    <link rel="icon" type="image/gif" href="https://upload.wikimedia.org/wikipedia/commons/4/43/Lambang_Kabupaten_Blora.gif">
+
+    <!-- Bootstrap 5 CSS & Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-accent: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-light: #f8fafc;
+        }
+
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .cover-preview-box {
+            height: 380px;
+            background: #e2e8f0;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .cover-preview-box i {
+            font-size: 6rem;
+            color: #94a3b8;
+        }
+
+        .book-detail-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .badge-category {
+            background: #eff6ff;
+            color: #2563eb;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            border: 1px solid #bfdbfe;
+        }
+
+        .btn-modern-primary {
+            background-color: var(--primary-accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-modern-primary:hover {
+            background-color: var(--primary-hover);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-modern-outline {
+            background: white;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-modern-outline:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom py-3">
+        <div class="container">
+            <a href="index.html" class="d-flex align-items-center gap-2 text-decoration-none text-dark" id="backToHomeLink">
+                <i class="bi bi-arrow-left fs-5"></i>
+                <span class="fw-bold">Kembali ke Katalog</span>
+            </a>
+            <div id="navbarBrandText" class="d-flex align-items-center gap-2 text-muted small">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/43/Lambang_Kabupaten_Blora.gif" 
+                     alt="Lambang Kabupaten Blora" 
+                     style="width: 24px; height: 28px; object-fit: contain;">
+                <span>Perpustakaan Digital Kabupaten Blora</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div id="loadingIndicator" class="text-center py-5">
+            <div class="spinner-border text-primary me-2" role="status"></div>
+            <span class="text-muted">Memuat detail buku...</span>
+        </div>
+
+        <div id="bookDetailContainer" style="display: none;">
+            <div class="row g-4">
+                <!-- COVER AREA -->
+                <div class="col-md-4 text-center">
+                    <div class="cover-preview-box mb-3" id="coverBox">
+                        <i class="bi bi-book"></i>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="#" id="readBookBtn" class="btn btn-modern-primary d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-book-half fs-5"></i> BACA BUKU SEKARANG
+                        </a>
+                        <button class="btn btn-modern-outline d-flex align-items-center justify-content-center gap-2" id="bookmarkBtn">
+                            <i class="bi bi-bookmark" id="bookmarkIcon"></i>
+                            <span id="bookmarkText">Simpan ke Bookmark</span>
+                        </button>
+                    </div>
+                    <div class="alert alert-light border mt-3 text-muted small text-start">
+                        <i class="bi bi-shield-check text-primary me-1"></i>
+                        <strong>Akses Membaca Digital:</strong> Buku ini dibaca langsung di dalam aplikasi (In-App Reader). Tidak ada unduhan berkas PDF.
+                    </div>
+                </div>
+
+                <!-- METADATA AREA -->
+                <div class="col-md-8">
+                    <div class="book-detail-card">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="badge-category" id="bookCategory">Umum</span>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill small">Tersedia untuk Dibaca</span>
+                        </div>
+
+                        <h2 class="fw-bold mb-2" id="bookTitle" style="color: #0f172a;">-</h2>
+                        <h5 class="text-muted mb-4" id="bookAuthor">-</h5>
+
+                        <div class="row g-3 mb-4 p-3 bg-light rounded-4 small">
+                            <div class="col-6 col-md-3">
+                                <span class="text-muted d-block">Penerbit</span>
+                                <strong id="bookPublisher">-</strong>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <span class="text-muted d-block">Tahun Terbit</span>
+                                <strong id="bookYear">-</strong>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <span class="text-muted d-block">ISBN</span>
+                                <strong id="bookIsbn">-</strong>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <span class="text-muted d-block">Bahasa</span>
+                                <strong id="bookLanguage">Indonesia</strong>
+                            </div>
+                        </div>
+
+                        <h6 class="fw-bold text-uppercase text-secondary mb-2" style="letter-spacing: 0.05em; font-size: 0.8rem;">
+                            Sinopsis / Deskripsi Buku
+                        </h6>
+                        <p class="text-secondary leading-relaxed" id="bookDescription" style="line-height: 1.8;">
+                            Tidak ada deskripsi untuk buku ini.
+                        </p>
+
+                        <hr class="my-4">
+
+                        <!-- Rating & Review Info -->
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="text-warning fs-5">⭐⭐⭐⭐⭐</span>
+                                <span class="text-muted small">(Katalog Terpusat Kabupaten Blora)</span>
+                            </div>
+                            <small class="text-muted font-monospace" id="bookCode">-</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="notFoundMessage" class="alert alert-warning text-center py-5" style="display: none;">
+            <i class="bi bi-exclamation-triangle fs-1 d-block mb-3"></i>
+            <h4>Buku Tidak Ditemukan</h4>
+            <p class="text-muted">Buku yang Anda cari mungkin telah dinonaktifkan atau dihapus dari katalog pusat.</p>
+            <a href="index.html" class="btn btn-modern-primary mt-2">Kembali ke Beranda</a>
+        </div>
+    </div>
+
+    <!-- Logic Detail Buku -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        import { SUPABASE_URL, SUPABASE_ANON_KEY, escapeHtml, getDriveCoverUrl } from './js/config.js';
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        function extractBookId() {
+            // 1. Coba dari query search ?id= atau ?book_id=
+            const urlParams = new URLSearchParams(window.location.search);
+            let id = urlParams.get('id') || urlParams.get('book_id');
+            if (id && id !== 'undefined' && id !== 'null') return id;
+
+            // 2. Coba dari hash routing #id= atau #book_id=
+            if (window.location.hash) {
+                const hashClean = window.location.hash.replace(/^#/, '');
+                const hashParams = new URLSearchParams(hashClean.includes('?') ? hashClean.split('?')[1] : hashClean);
+                id = hashParams.get('id') || hashParams.get('book_id');
+                if (id && id !== 'undefined' && id !== 'null') return id;
+            }
+
+            // 3. Coba dari sessionStorage jika baru saja diklik dari dashboard/katalog
+            const storedId = sessionStorage.getItem('last_active_book_id');
+            if (storedId && storedId !== 'undefined' && storedId !== 'null') return storedId;
+
+            return null;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let bookId = extractBookId();
+        const perpusParam = urlParams.get('perpus');
+
+        let currentUser = null;
+        let currentMember = null;
+        let isBookmarked = false;
+
+        if (perpusParam) {
+            document.getElementById('backToHomeLink').href = `index.html?perpus=${encodeURIComponent(perpusParam)}`;
+            document.getElementById('navbarBrandText').textContent = `Portal Mitra: ${perpusParam}`;
+        }
+
+        async function init() {
+            // Jika bookId belum ada di URL, coba cari buku aktif pertama dari database sebagai fallback cerdas
+            if (!bookId) {
+                try {
+                    const { data: fallbackBook } = await supabase
+                        .from('books')
+                        .select('id')
+                        .eq('status', 'ACTIVE')
+                        .order('created_at', { ascending: false })
+                        .limit(1)
+                        .maybeSingle();
+
+                    if (fallbackBook && fallbackBook.id) {
+                        bookId = fallbackBook.id;
+                        // Simpan ke URL tanpa reload agar rapi
+                        window.history.replaceState({}, '', `detail-buku.html?id=${bookId}${perpusParam ? '&perpus=' + encodeURIComponent(perpusParam) : ''}`);
+                    }
+                } catch (e) {
+                    console.warn('Fallback book fetch failed:', e);
+                }
+            }
+
+            if (!bookId) {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('notFoundMessage').style.display = 'block';
+                return;
+            }
+
+            // Check current user
+            const { data: { user } } = await supabase.auth.getUser();
+            currentUser = user;
+
+            if (currentUser) {
+                const { data: member } = await supabase
+                    .from('members')
+                    .select('id, library_id')
+                    .eq('user_id', currentUser.id)
+                    .maybeSingle();
+                currentMember = member;
+
+                if (currentMember) {
+                    checkBookmarkStatus();
+                }
+            }
+
+            loadBookDetails();
+        }
+
+        async function loadBookDetails() {
+            try {
+                const { data: book, error } = await supabase
+                    .from('books')
+                    .select(`
+                        id, book_code, isbn, title, author, publisher, publication_year,
+                        description, language, category_id,
+                        cover_file_id, pdf_file_id, visibility, status,
+                        categories ( id, name )
+                    `)
+                    .eq('id', bookId)
+                    .maybeSingle();
+
+                document.getElementById('loadingIndicator').style.display = 'none';
+
+                if (error) {
+                    console.error('Database error loading book:', error);
+                    document.getElementById('notFoundMessage').style.display = 'block';
+                    return;
+                }
+
+                if (!book) {
+                    document.getElementById('notFoundMessage').style.display = 'block';
+                    return;
+                }
+
+                // Tampilkan container buku
+                document.getElementById('bookDetailContainer').style.display = 'block';
+                document.title = `${book.title} - Perpustakaan Digital Blora`;
+
+                // Status banner jika buku bukan ACTIVE
+                if (book.status !== 'ACTIVE') {
+                    const warnBanner = document.createElement('div');
+                    warnBanner.className = 'alert alert-warning mb-4';
+                    warnBanner.innerHTML = `<i class="bi bi-info-circle me-2"></i>Status buku ini: <strong>${escapeHtml(book.status)}</strong> (Belum dipublikasikan aktif).`;
+                    document.getElementById('bookDetailContainer').prepend(warnBanner);
+                }
+
+                document.getElementById('bookTitle').textContent = book.title;
+                document.getElementById('bookAuthor').textContent = book.author || 'Penulis Anonim';
+                document.getElementById('bookPublisher').textContent = book.publisher || '-';
+                document.getElementById('bookYear').textContent = book.publication_year || '-';
+                document.getElementById('bookIsbn').textContent = book.isbn || '-';
+                document.getElementById('bookLanguage').textContent = book.language || 'Indonesia';
+                document.getElementById('bookCategory').textContent = book.categories ? book.categories.name : 'Umum';
+                document.getElementById('bookCode').textContent = `KODE: ${book.book_code || '-'}`;
+
+                if (book.description) {
+                    document.getElementById('bookDescription').textContent = book.description;
+                }
+
+                // Render cover image jika tersedia
+                const coverBox = document.getElementById('coverBox');
+                const coverUrl = getDriveCoverUrl(book.cover_file_id);
+                if (coverUrl) {
+                    coverBox.innerHTML = `<img src="${coverUrl}" alt="${escapeHtml(book.title)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 16px;" onerror="this.outerHTML='<i class=\\\'bi bi-book\\\'></i>'">`;
+                } else {
+                    coverBox.innerHTML = '<i class="bi bi-book"></i>';
+                }
+
+                // URL link ke reader
+                const readLink = perpusParam ? `reader.html?book_id=${book.id}&perpus=${encodeURIComponent(perpusParam)}` : `reader.html?book_id=${book.id}`;
+                document.getElementById('readBookBtn').href = readLink;
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('notFoundMessage').style.display = 'block';
+            }
+        }
+
+        async function checkBookmarkStatus() {
+            if (!currentMember) return;
+
+            const { data } = await supabase
+                .from('bookmarks')
+                .select('id')
+                .eq('member_id', currentMember.id)
+                .eq('book_id', bookId)
+                .maybeSingle();
+
+            if (data) {
+                isBookmarked = true;
+                document.getElementById('bookmarkIcon').className = 'bi bi-bookmark-fill text-primary';
+                document.getElementById('bookmarkText').textContent = 'Tersimpan di Bookmark';
+            }
+        }
+
+        document.getElementById('bookmarkBtn').addEventListener('click', async () => {
+            if (!currentUser) {
+                alert('Silakan login terlebih dahulu untuk menyimpan bookmark.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            if (!currentMember) {
+                alert('Akun Anda belum terdaftar sebagai anggota pembaca.');
+                return;
+            }
+
+            try {
+                if (isBookmarked) {
+                    await supabase
+                        .from('bookmarks')
+                        .delete()
+                        .eq('member_id', currentMember.id)
+                        .eq('book_id', bookId);
+
+                    isBookmarked = false;
+                    document.getElementById('bookmarkIcon').className = 'bi bi-bookmark';
+                    document.getElementById('bookmarkText').textContent = 'Simpan ke Bookmark';
+                } else {
+                    await supabase
+                        .from('bookmarks')
+                        .insert({
+                            member_id: currentMember.id,
+                            book_id: bookId
+                        });
+
+                    isBookmarked = true;
+                    document.getElementById('bookmarkIcon').className = 'bi bi-bookmark-fill text-primary';
+                    document.getElementById('bookmarkText').textContent = 'Tersimpan di Bookmark';
+                }
+            } catch (err) {
+                alert('Gagal memperbarui bookmark: ' + err.message);
+            }
+        });
+
+        init();
+    </script>
+</body>
+
+</html>

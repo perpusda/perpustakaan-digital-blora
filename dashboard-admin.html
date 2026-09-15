@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Pusat - Perpustakaan Digital Kabupaten Blora</title>
+    <link rel="icon" type="image/gif" href="https://upload.wikimedia.org/wikipedia/commons/4/43/Lambang_Kabupaten_Blora.gif">
+
+    <!-- Bootstrap 5 CSS & Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-accent: #2563eb;
+            --primary-hover: #1d4ed8;
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --sidebar-active: #2563eb;
+            --card-border: rgba(226, 232, 240, 0.8);
+            --bg-canvas: #f8fafc;
+        }
+
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            color: #94a3b8;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-brand h4 {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+
+        .sidebar-brand span.badge-role {
+            font-size: 0.68rem;
+            padding: 4px 8px;
+            background: rgba(37, 99, 235, 0.2);
+            color: #60a5fa;
+            border-radius: 6px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #94a3b8;
+            padding: 12px 20px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar nav a:hover {
+            color: #f1f5f9;
+            background-color: var(--sidebar-hover);
+        }
+
+        .sidebar nav a.active {
+            color: #ffffff;
+            background-color: rgba(37, 99, 235, 0.15);
+            border-left-color: var(--sidebar-active);
+        }
+
+        .sidebar nav a i {
+            font-size: 1.15rem;
+        }
+
+        /* Stat Card Minimalist & Hover Animation */
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        /* Modern Card Component */
+        .modern-card {
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .modern-card:hover {
+            box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-header-clean {
+            padding: 20px 24px;
+            background: transparent;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Clean Table */
+        .table-custom {
+            margin-bottom: 0;
+            vertical-align: middle;
+        }
+
+        .table-custom thead th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 14px 18px;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .table-custom tbody td {
+            padding: 14px 18px;
+            color: #334155;
+            font-size: 0.88rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table-custom tbody tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* Badges */
+        .badge-status-active {
+            background-color: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+        }
+
+        .badge-status-inactive {
+            background-color: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #cbd5e1;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+        }
+
+        .badge-type {
+            background-color: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.72rem;
+            letter-spacing: 0.03em;
+        }
+
+        /* Search input & buttons */
+        .form-control-clean {
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 0.88rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control-clean:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-modern-primary {
+            background-color: var(--primary-accent);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-modern-primary:hover {
+            background-color: var(--primary-hover);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-modern-outline {
+            background: white;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 0.88rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-modern-outline:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            color: #1e293b;
+        }
+
+        /* Category Card Badge */
+        .category-chip {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .category-chip:hover {
+            border-color: #93c5fd;
+            background: #f0f7ff;
+            transform: translateY(-2px);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+
+            <!-- SIDEBAR -->
+            <div class="col-md-3 col-lg-2 sidebar d-flex flex-column">
+                <div class="sidebar-brand">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/43/Lambang_Kabupaten_Blora.gif" 
+                             alt="Lambang Kabupaten Blora" 
+                             style="width: 32px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+                        <div>
+                            <h5 class="fw-bold mb-0 text-white">Perpustakaan Digital</h5>
+                            <small class="text-white-50">Kabupaten Blora</small>
+                        </div>
+                    </div>
+                    <span class="badge-role">ADMIN PUSAT</span>
+                </div>
+
+                <nav class="mt-3 flex-grow-1">
+                    <a href="#dashboard" class="active">
+                        <i class="bi bi-grid-1x2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#perpustakaan">
+                        <i class="bi bi-buildings"></i>
+                        <span>Perpustakaan</span>
+                    </a>
+                    <a href="master-buku.html">
+                        <i class="bi bi-book"></i>
+                        <span>Master Buku</span>
+                    </a>
+                    <a href="#kategori">
+                        <i class="bi bi-tags"></i>
+                        <span>Kategori</span>
+                    </a>
+                    <a href="#anggota">
+                        <i class="bi bi-people"></i>
+                        <span>Anggota</span>
+                    </a>
+                    <a href="#statistik">
+                        <i class="bi bi-bar-chart"></i>
+                        <span>Statistik</span>
+                    </a>
+                </nav>
+
+                <div class="p-3 border-top border-secondary border-opacity-25">
+                    <a href="#" id="logoutBtn" class="d-flex align-items-center gap-2 text-danger text-decoration-none px-3 py-2 rounded" style="transition: background 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.1)'" onmouseout="this.style.background='transparent'">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Keluar (Logout)</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-md-9 col-lg-10 p-4 p-md-5">
+
+                <!-- TOP BAR / HEADER -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2">
+                    <div>
+                        <h3 class="fw-bold mb-1" style="color: #0f172a; letter-spacing: -0.02em;">Dashboard Admin Pusat</h3>
+                        <p class="text-muted mb-0">
+                            Selamat datang kembali, <strong id="adminName" class="text-primary">Admin</strong>. Kelola sistem Perpustakaan Digital Kabupaten Blora.
+                        </p>
+                    </div>
+                    <div class="d-flex gap-2 mt-3 mt-md-0">
+                        <button class="btn btn-modern-outline d-flex align-items-center gap-2" onclick="refreshAll()">
+                            <i class="bi bi-arrow-clockwise"></i>
+                            <span>Segarkan Data</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ALERT NOTIFIKASI ERROR/PESAN GLOBAL -->
+                <div id="globalAlert" style="display: none;"></div>
+
+                <!-- STATISTIK CARDS -->
+                <div class="row g-3 mb-4 animate-fade-in" id="dashboard">
+                    <!-- Perpustakaan -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="stat-card d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="text-muted small fw-semibold text-uppercase tracking-wider">Perpustakaan</div>
+                                <h3 class="fw-bold mt-2 mb-0" id="libraryCount">0</h3>
+                                <small class="text-muted" style="font-size: 0.76rem;">Terdaftar di Blora</small>
+                            </div>
+                            <div class="stat-icon-wrapper" style="background-color: #eff6ff; color: #2563eb;">
+                                <i class="bi bi-buildings"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Master Buku -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="stat-card d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="text-muted small fw-semibold text-uppercase tracking-wider">Master Buku</div>
+                                <h3 class="fw-bold mt-2 mb-0" id="bookCount">0</h3>
+                                <small class="text-muted" style="font-size: 0.76rem;">Judul katalog pusat</small>
+                            </div>
+                            <div class="stat-icon-wrapper" style="background-color: #f0fdf4; color: #16a34a;">
+                                <i class="bi bi-book"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Anggota -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="stat-card d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="text-muted small fw-semibold text-uppercase tracking-wider">Anggota</div>
+                                <h3 class="fw-bold mt-2 mb-0" id="memberCount">0</h3>
+                                <small class="text-muted" style="font-size: 0.76rem;">Pembaca aktif</small>
+                            </div>
+                            <div class="stat-icon-wrapper" style="background-color: #faf5ff; color: #9333ea;">
+                                <i class="bi bi-people"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kategori -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="stat-card d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="text-muted small fw-semibold text-uppercase tracking-wider">Kategori</div>
+                                <h3 class="fw-bold mt-2 mb-0" id="categoryCount">0</h3>
+                                <small class="text-muted" style="font-size: 0.76rem;">Klasifikasi buku</small>
+                            </div>
+                            <div class="stat-icon-wrapper" style="background-color: #fff7ed; color: #ea580c;">
+                                <i class="bi bi-tags"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION: DAFTAR PERPUSTAKAAN (REQ NO 10, 11, 12) -->
+                <div id="perpustakaan" class="modern-card mb-4 animate-fade-in">
+                    <div class="card-header-clean flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
+                                <i class="bi bi-buildings"></i>
+                            </span>
+                            <div>
+                                <h5 class="fw-bold mb-0" style="color: #0f172a;">Daftar Perpustakaan Terdaftar</h5>
+                                <small class="text-muted">Kelola seluruh perpustakaan desa, sekolah, dan komunitas di Blora</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="input-group input-group-sm" style="max-width: 260px;">
+                                <span class="input-group-text bg-white border-end-0 text-muted">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="text" id="searchLibraryInput" class="form-control form-control-clean border-start-0" placeholder="Cari perpustakaan...">
+                            </div>
+                            <button class="btn btn-sm btn-modern-outline" onclick="loadLibraries()" title="Muat ulang tabel">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Nama Perpustakaan</th>
+                                    <th>Jenis</th>
+                                    <th>Desa / Kelurahan</th>
+                                    <th>Kecamatan</th>
+                                    <th>Status</th>
+                                    <th>Tanggal Daftar</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="libraryTable">
+                                <tr>
+                                    <td colspan="8" class="text-center py-5">
+                                        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                                        <span class="text-muted">Memuat data perpustakaan...</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="p-3 border-top bg-light bg-opacity-50 text-muted small d-flex justify-content-between align-items-center" id="libraryTableFooter">
+                        <span>Total: <strong id="totalLibraryBadge">0</strong> perpustakaan</span>
+                        <span class="text-muted"><i class="bi bi-shield-check text-success me-1"></i>Supabase RLS Active</span>
+                    </div>
+                </div>
+
+                <!-- SECTION: MASTER BUKU (STEP 10) -->
+                <div id="buku" class="modern-card mb-4 animate-fade-in">
+                    <div class="card-header-clean flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="p-2 rounded-3 bg-success bg-opacity-10 text-success">
+                                <i class="bi bi-book"></i>
+                            </span>
+                            <div>
+                                <h5 class="fw-bold mb-0" style="color: #0f172a;">Katalog Master Buku</h5>
+                                <small class="text-muted">Pusat master katalog buku untuk 900+ perpustakaan se-Blora</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <select id="filterCategorySelect" class="form-select form-select-sm form-control-clean" style="max-width: 180px;">
+                                <option value="">Semua Kategori</option>
+                            </select>
+
+                            <div class="input-group input-group-sm" style="max-width: 240px;">
+                                <span class="input-group-text bg-white border-end-0 text-muted">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="text" id="searchBookInput" class="form-control form-control-clean border-start-0" placeholder="Cari judul/penulis...">
+                            </div>
+
+                            <button class="btn btn-sm btn-modern-primary d-flex align-items-center gap-2" onclick="openBookModal()">
+                                <i class="bi bi-plus-lg"></i>
+                                <span>Tambah Buku</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Cover</th>
+                                    <th>Judul Buku</th>
+                                    <th>Penulis / Penerbit</th>
+                                    <th>Kategori</th>
+                                    <th>Visibility</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookTable">
+                                <tr>
+                                    <td colspan="8" class="text-center py-5">
+                                        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                                        <span class="text-muted">Memuat data master buku...</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="p-3 border-top bg-light bg-opacity-50 text-muted small d-flex justify-content-between align-items-center">
+                        <span>Total: <strong id="totalBookBadge">0</strong> master buku</span>
+                        <span class="text-muted"><i class="bi bi-google text-primary me-1"></i>Tersimpan terpusat di Google Drive</span>
+                    </div>
+                </div>
+
+                <!-- SECTION: KATEGORI -->
+                <div id="kategori" class="modern-card mb-4 animate-fade-in">
+                    <div class="card-header-clean">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="p-2 rounded-3 bg-warning bg-opacity-10 text-warning">
+                                <i class="bi bi-tags"></i>
+                            </span>
+                            <div>
+                                <h5 class="fw-bold mb-0" style="color: #0f172a;">Kategori Buku</h5>
+                                <small class="text-muted">Klasifikasi buku perpustakaan</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-modern-outline" onclick="loadCategories()">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh
+                        </button>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <div id="categoryList" class="row g-3">
+                            <div class="col-12 text-center py-3 text-muted">
+                                <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                                Memuat kategori...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION: ANGGOTA & STATISTIK -->
+                <div class="row g-4" id="statistik">
+                    <div class="col-lg-6" id="anggota">
+                        <div class="modern-card h-100 animate-fade-in">
+                            <div class="card-header-clean">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="p-2 rounded-3 bg-info bg-opacity-10 text-info">
+                                        <i class="bi bi-people"></i>
+                                    </span>
+                                    <div>
+                                        <h5 class="fw-bold mb-0" style="color: #0f172a;">Ringkasan Anggota</h5>
+                                        <small class="text-muted">Pembaca terdaftar</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <p class="text-muted mb-3">
+                                    Admin Pusat dapat memonitor pertumbuhan seluruh anggota terdaftar dari seluruh perpustakaan di Kabupaten Blora.
+                                </p>
+                                <div class="p-3 bg-light rounded-3 d-flex justify-content-between align-items-center">
+                                    <span class="text-secondary fw-medium">Total Anggota Terverifikasi:</span>
+                                    <span class="badge bg-primary fs-6 px-3 py-2" id="memberSummaryCount">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="modern-card h-100 animate-fade-in">
+                            <div class="card-header-clean">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="p-2 rounded-3 bg-secondary bg-opacity-10 text-secondary">
+                                        <i class="bi bi-speedometer2"></i>
+                                    </span>
+                                    <div>
+                                        <h5 class="fw-bold mb-0" style="color: #0f172a;">Status & Kesehatan Sistem</h5>
+                                        <small class="text-muted">Infrastruktur Supabase</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-4">
+                                <ul class="list-group list-group-flush small">
+                                    <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                        <span>Supabase Database Connection</span>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">Connected</span>
+                                    </li>
+                                    <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                        <span>Supabase Row Level Security</span>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">Enforced</span>
+                                    </li>
+                                    <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                        <span>Penyimpanan Berkas Digital</span>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Google Drive Centralized</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETAIL PERPUSTAKAAN -->
+    <div class="modal fade" id="libraryDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="detailLibraryName">Detail Perpustakaan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4" id="detailLibraryContent">
+                    Memuat...
+                </div>
+                <div class="modal-footer border-top-0 pt-0">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH/EDIT MASTER BUKU (STEP 10) -->
+    <div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-bottom px-4 py-3">
+                    <h5 class="modal-title fw-bold" id="bookModalTitle">
+                        <i class="bi bi-book me-2 text-primary"></i>Tambah Master Buku Baru
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="bookModalAlert" style="display:none;"></div>
+                    <form id="bookForm">
+                        <input type="hidden" id="bookId">
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Kode Buku (Otomatis/Manual)</label>
+                                <input type="text" id="bookCode" class="form-control form-control-clean" placeholder="Contoh: BK-2026-001">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">ISBN</label>
+                                <input type="text" id="bookIsbn" class="form-control form-control-clean" placeholder="978-xxx-xxx-x">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Judul Buku <span class="text-danger">*</span></label>
+                                <input type="text" id="bookTitle" class="form-control form-control-clean" placeholder="Masukkan judul buku lengkap" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Penulis / Pengarang</label>
+                                <input type="text" id="bookAuthor" class="form-control form-control-clean" placeholder="Nama penulis">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Penerbit</label>
+                                <input type="text" id="bookPublisher" class="form-control form-control-clean" placeholder="Nama penerbit">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Tahun Terbit</label>
+                                <input type="number" id="bookYear" class="form-control form-control-clean" placeholder="2026" min="1900" max="2100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Kategori <span class="text-danger">*</span></label>
+                                <select id="bookCategoryId" class="form-select form-control-clean" required>
+                                    <option value="">Pilih Kategori</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Bahasa</label>
+                                <input type="text" id="bookLanguage" class="form-control form-control-clean" value="Indonesia">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Deskripsi / Sinopsis Buku</label>
+                                <textarea id="bookDescription" class="form-control form-control-clean" rows="3" placeholder="Ringkasan atau sinopsis buku..."></textarea>
+                            </div>
+
+                            <!-- BERKAS COVER & PDF (UPLOAD LANGSUNG / DRIVE ID) -->
+                            <div class="col-12"><hr class="my-1"></div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Cover Buku (File Langsung atau ID Drive)</label>
+                                <input type="file" id="coverFileInput" class="form-control form-control-clean mb-2" accept="image/*">
+                                <input type="text" id="coverFileId" class="form-control form-control-clean" placeholder="Atau tempel Google Drive File ID / Link...">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Berkas PDF (File Langsung atau ID Drive)</label>
+                                <input type="file" id="pdfFileInput" class="form-control form-control-clean mb-2" accept="application/pdf">
+                                <input type="text" id="pdfFileId" class="form-control form-control-clean" placeholder="Atau tempel Google Drive File ID / Link...">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Visibilitas</label>
+                                <select id="bookVisibility" class="form-select form-control-clean">
+                                    <option value="GLOBAL">GLOBAL (Semua Perpustakaan)</option>
+                                    <option value="SELECTED">SELECTED (Perpustakaan Tertentu)</option>
+                                    <option value="PRIVATE">PRIVATE (Khusus)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Status Buku</label>
+                                <select id="bookStatus" class="form-select form-control-clean">
+                                    <option value="ACTIVE">ACTIVE (Aktif)</option>
+                                    <option value="INACTIVE">INACTIVE (Tidak Aktif)</option>
+                                    <option value="ARCHIVED">ARCHIVED (Diarsipkan)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-top px-4 py-3">
+                    <button type="button" class="btn btn-sm btn-modern-outline" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" id="saveBookBtn" class="btn btn-sm btn-modern-primary" onclick="saveBook()">
+                        <i class="bi bi-save me-1"></i> Simpan Buku
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Supabase Module -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        // =====================================================
+        // SUPABASE CONFIGURATION
+        // =====================================================
+        const SUPABASE_URL = 'https://gcyvuytalrsxkeiephbt.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjeXZ1eXRhbHJzeGtlaWVwaGJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkxNzk1MTUsImV4cCI6MjEwNDc1NTUxNX0.5LpwyZTprvuHaz6DYhJ3cfVh48E6c3z5RY2-QimgDeY';
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // State variables
+        let allLibraries = [];
+        let allBooks = [];
+        let allCategories = [];
+        let bookModalInstance = null;
+        let libraryModalInstance = null;
+
+        // =====================================================
+        // CEK ADMIN & AUTH
+        // =====================================================
+        async function checkAdmin() {
+            try {
+                const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+                if (userError || !user) {
+                    window.location.href = 'login.html';
+                    return null;
+                }
+
+                const { data: profile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('id, full_name, email, role, status')
+                    .eq('id', user.id)
+                    .single();
+
+                if (profileError) {
+                    console.error('Error fetching admin profile:', profileError);
+                    showGlobalAlert('Gagal mengambil data profil admin: ' + profileError.message, 'danger');
+                    return null;
+                }
+
+                if (profile.role !== 'SUPER_ADMIN') {
+                    alert('Halaman ini khusus untuk SUPER_ADMIN (Admin Pusat Kabupaten Blora).');
+                    window.location.href = 'login.html';
+                    return null;
+                }
+
+                if (profile.status !== 'ACTIVE') {
+                    alert('Akun admin Anda tidak berstatus aktif.');
+                    await supabase.auth.signOut();
+                    window.location.href = 'login.html';
+                    return null;
+                }
+
+                document.getElementById('adminName').textContent = profile.full_name || profile.email || 'Admin Pusat';
+                return user;
+            } catch (err) {
+                console.error('Unexpected checkAdmin error:', err);
+                showGlobalAlert('Terjadi kesalahan otentikasi: ' + err.message, 'danger');
+                return null;
+            }
+        }
+
+        // =====================================================
+        // GLOBAL ALERT HELPER
+        // =====================================================
+        function showGlobalAlert(message, type = 'danger') {
+            const container = document.getElementById('globalAlert');
+            container.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show rounded-3 shadow-sm mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            container.style.display = 'block';
+        }
+
+        // =====================================================
+        // STATISTIK SISTEM
+        // =====================================================
+        async function loadStatistics() {
+            try {
+                const [libRes, bookRes, memRes, catRes] = await Promise.all([
+                    supabase.from('libraries').select('*', { count: 'exact', head: true }),
+                    supabase.from('books').select('*', { count: 'exact', head: true }),
+                    supabase.from('members').select('*', { count: 'exact', head: true }),
+                    supabase.from('categories').select('*', { count: 'exact', head: true })
+                ]);
+
+                const libCount = libRes.count || 0;
+                const bookCount = bookRes.count || 0;
+                const memCount = memRes.count || 0;
+                const catCount = catRes.count || 0;
+
+                document.getElementById('libraryCount').textContent = libCount;
+                document.getElementById('bookCount').textContent = bookCount;
+                document.getElementById('memberCount').textContent = memCount;
+                document.getElementById('categoryCount').textContent = catCount;
+                document.getElementById('memberSummaryCount').textContent = memCount;
+            } catch (err) {
+                console.error('Gagal mengambil statistik:', err);
+            }
+        }
+
+        // =====================================================
+        // DAFTAR PERPUSTAKAAN (REQ 10, 11, 12)
+        // =====================================================
+        window.loadLibraries = async function() {
+            const table = document.getElementById('libraryTable');
+            table.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-4">
+                        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                        <span class="text-muted">Memuat data perpustakaan...</span>
+                    </td>
+                </tr>
+            `;
+
+            try {
+                const { data, error } = await supabase
+                    .from('libraries')
+                    .select('id, library_code, name, library_type, village, district, address, phone, email, status, created_at')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('Error loadLibraries:', error);
+                    table.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="text-center py-4">
+                                <div class="alert alert-danger d-inline-block mb-0 py-2 px-3">
+                                    <i class="bi bi-x-circle me-1"></i> Gagal memuat data: ${error.message}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                allLibraries = data || [];
+                document.getElementById('totalLibraryBadge').textContent = allLibraries.length;
+                renderLibraries(allLibraries);
+            } catch (err) {
+                console.error('Exception loadLibraries:', err);
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-danger">
+                            <i class="bi bi-exclamation-triangle me-1"></i> Terjadi kesalahan teknis: ${err.message}
+                        </td>
+                    </tr>
+                `;
+            }
+        };
+
+        function renderLibraries(libraries) {
+            const table = document.getElementById('libraryTable');
+
+            if (!libraries || libraries.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-3 d-block mb-2 text-secondary"></i>
+                            Belum ada data perpustakaan.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            table.innerHTML = '';
+            libraries.forEach(lib => {
+                const badgeClass = lib.status === 'ACTIVE' ? 'badge-status-active' : 'badge-status-inactive';
+                const createdDate = lib.created_at ? new Date(lib.created_at).toLocaleDateString('id-ID', {
+                    day: '2-digit', month: '2-digit', year: 'numeric'
+                }) : '-';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <span class="fw-bold font-monospace text-dark" style="font-size: 0.82rem;">${escapeHtml(lib.library_code || '-')}</span>
+                    </td>
+                    <td>
+                        <strong class="text-dark">${escapeHtml(lib.name || '-')}</strong>
+                    </td>
+                    <td>
+                        <span class="badge-type">${escapeHtml(lib.library_type || '-')}</span>
+                    </td>
+                    <td>${escapeHtml(lib.village || '-')}</td>
+                    <td>${escapeHtml(lib.district || '-')}</td>
+                    <td>
+                        <span class="${badgeClass}">${escapeHtml(lib.status || 'INACTIVE')}</span>
+                    </td>
+                    <td><small class="text-muted">${createdDate}</small></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-light border py-1 px-2 text-primary" title="Lihat Detail" onclick="showLibraryDetail('${lib.id}')">
+                            <i class="bi bi-eye"></i> Detail
+                        </button>
+                    </td>
+                `;
+                table.appendChild(tr);
+            });
+        }
+
+        // Pencarian client-side perpustakaan
+        document.getElementById('searchLibraryInput').addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase().trim();
+            if (!keyword) {
+                renderLibraries(allLibraries);
+                return;
+            }
+            const filtered = allLibraries.filter(lib =>
+                (lib.name && lib.name.toLowerCase().includes(keyword)) ||
+                (lib.library_code && lib.library_code.toLowerCase().includes(keyword)) ||
+                (lib.district && lib.district.toLowerCase().includes(keyword)) ||
+                (lib.village && lib.village.toLowerCase().includes(keyword)) ||
+                (lib.library_type && lib.library_type.toLowerCase().includes(keyword))
+            );
+            renderLibraries(filtered);
+        });
+
+        // Detail Modal Perpustakaan
+        window.showLibraryDetail = function(libId) {
+            const lib = allLibraries.find(item => item.id === libId);
+            if (!lib) return;
+
+            document.getElementById('detailLibraryName').textContent = lib.name || 'Detail Perpustakaan';
+            const content = document.getElementById('detailLibraryContent');
+
+            content.innerHTML = `
+                <div class="row g-3 small">
+                    <div class="col-6">
+                        <span class="text-muted d-block">Kode Perpustakaan</span>
+                        <strong class="font-monospace fs-6">${escapeHtml(lib.library_code || '-')}</strong>
+                    </div>
+                    <div class="col-6">
+                        <span class="text-muted d-block">Jenis Perpustakaan</span>
+                        <span class="badge-type">${escapeHtml(lib.library_type || '-')}</span>
+                    </div>
+                    <div class="col-12"><hr class="my-1"></div>
+                    <div class="col-6">
+                        <span class="text-muted d-block">Desa / Kelurahan</span>
+                        <strong>${escapeHtml(lib.village || '-')}</strong>
+                    </div>
+                    <div class="col-6">
+                        <span class="text-muted d-block">Kecamatan</span>
+                        <strong>${escapeHtml(lib.district || '-')}</strong>
+                    </div>
+                    <div class="col-12">
+                        <span class="text-muted d-block">Alamat Lengkap</span>
+                        <div>${escapeHtml(lib.address || '-')}</div>
+                    </div>
+                    <div class="col-6">
+                        <span class="text-muted d-block">Email Kontak</span>
+                        <div>${escapeHtml(lib.email || '-')}</div>
+                    </div>
+                    <div class="col-6">
+                        <span class="text-muted d-block">Nomor Telepon</span>
+                        <div>${escapeHtml(lib.phone || '-')}</div>
+                    </div>
+                    <div class="col-6">
+                        <span class="text-muted d-block">Status Akun</span>
+                        <span class="${lib.status === 'ACTIVE' ? 'badge-status-active' : 'badge-status-inactive'}">${escapeHtml(lib.status)}</span>
+                    </div>
+                    <div class="col-6">
+                        <span class="text-muted d-block">Tanggal Pendaftaran</span>
+                        <div>${lib.created_at ? new Date(lib.created_at).toLocaleString('id-ID') : '-'}</div>
+                    </div>
+                </div>
+            `;
+
+            if (!libraryModalInstance) {
+                libraryModalInstance = new bootstrap.Modal(document.getElementById('libraryDetailModal'));
+            }
+            libraryModalInstance.show();
+        };
+
+        // =====================================================
+        // STEP 10: MASTER BUKU
+        // =====================================================
+        window.loadBooks = async function() {
+            const table = document.getElementById('bookTable');
+            table.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-4">
+                        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                        <span class="text-muted">Memuat katalog master buku...</span>
+                    </td>
+                </tr>
+            `;
+
+            try {
+                const { data, error } = await supabase
+                    .from('books')
+                    .select(`
+                        id, book_code, isbn, title, author, publisher, publication_year,
+                        edition, description, language, category_id,
+                        cover_file_id, cover_file_name, pdf_file_id, pdf_file_name,
+                        visibility, status, created_at,
+                        categories ( id, name )
+                    `)
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('Error loadBooks:', error);
+                    table.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-danger">
+                                <i class="bi bi-x-circle me-1"></i> Gagal memuat buku: ${error.message}
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                allBooks = data || [];
+                document.getElementById('totalBookBadge').textContent = allBooks.length;
+                document.getElementById('bookCount').textContent = allBooks.length;
+                renderBooks(allBooks);
+            } catch (err) {
+                console.error('Exception loadBooks:', err);
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-danger">
+                            <i class="bi bi-exclamation-triangle me-1"></i> Terjadi kesalahan teknis: ${err.message}
+                        </td>
+                    </tr>
+                `;
+            }
+        };
+
+        function renderBooks(books) {
+            const table = document.getElementById('bookTable');
+
+            if (!books || books.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            <i class="bi bi-journal-x fs-3 d-block mb-2 text-secondary"></i>
+                            Belum ada katalog master buku. Silakan klik <strong>Tambah Buku</strong>.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            table.innerHTML = '';
+            books.forEach(b => {
+                const categoryName = b.categories ? b.categories.name : '-';
+                let statusBadge = 'badge-status-active';
+                if (b.status === 'INACTIVE') statusBadge = 'badge-status-inactive';
+                if (b.status === 'ARCHIVED') statusBadge = 'bg-secondary text-white';
+
+                const coverDisplay = b.cover_file_id
+                    ? `<span class="badge bg-light text-primary border" title="ID: ${escapeHtml(b.cover_file_id)}"><i class="bi bi-image"></i> Cover ID</span>`
+                    : `<span class="text-muted small">-</span>`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <span class="font-monospace fw-bold text-dark" style="font-size: 0.8rem;">${escapeHtml(b.book_code || '-')}</span>
+                    </td>
+                    <td>${coverDisplay}</td>
+                    <td>
+                        <strong class="text-dark d-block">${escapeHtml(b.title)}</strong>
+                        ${b.isbn ? `<small class="text-muted font-monospace">ISBN: ${escapeHtml(b.isbn)}</small>` : ''}
+                    </td>
+                    <td>
+                        <div>${escapeHtml(b.author || '-')}</div>
+                        <small class="text-muted">${escapeHtml(b.publisher || '-')}${b.publication_year ? ` (${b.publication_year})` : ''}</small>
+                    </td>
+                    <td>
+                        <span class="badge bg-light text-dark border">${escapeHtml(categoryName)}</span>
+                    </td>
+                    <td>
+                        <span class="badge bg-info-subtle text-info border border-info-subtle">${escapeHtml(b.visibility || 'GLOBAL')}</span>
+                    </td>
+                    <td>
+                        <span class="${statusBadge} px-2 py-1">${escapeHtml(b.status || 'ACTIVE')}</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-sm">
+                            <a href="detail-buku.html?id=${b.id}" onclick="sessionStorage.setItem('last_active_book_id', '${b.id}')" target="_blank" class="btn btn-light border py-1 px-2 text-info" title="Lihat Halaman Detail">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="reader.html?book_id=${b.id}" onclick="sessionStorage.setItem('last_active_book_id', '${b.id}')" target="_blank" class="btn btn-light border py-1 px-2 text-success" title="Baca Buku">
+                                <i class="bi bi-book"></i>
+                            </a>
+                            <button class="btn btn-light border py-1 px-2 text-primary" title="Edit Buku" onclick="openBookModal('${b.id}')">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-light border py-1 px-2 text-warning" title="Ubah Status/Archive" onclick="toggleBookStatus('${b.id}', '${b.status}')">
+                                <i class="bi bi-archive"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(tr);
+            });
+        }
+
+        // Filter & Search Master Buku
+        function applyBookFilters() {
+            const keyword = document.getElementById('searchBookInput').value.toLowerCase().trim();
+            const categoryFilter = document.getElementById('filterCategorySelect').value;
+
+            let filtered = allBooks;
+            if (categoryFilter) {
+                filtered = filtered.filter(b => b.category_id === categoryFilter);
+            }
+            if (keyword) {
+                filtered = filtered.filter(b =>
+                    (b.title && b.title.toLowerCase().includes(keyword)) ||
+                    (b.author && b.author.toLowerCase().includes(keyword)) ||
+                    (b.book_code && b.book_code.toLowerCase().includes(keyword)) ||
+                    (b.isbn && b.isbn.toLowerCase().includes(keyword))
+                );
+            }
+            renderBooks(filtered);
+        }
+
+        document.getElementById('searchBookInput').addEventListener('input', applyBookFilters);
+        document.getElementById('filterCategorySelect').addEventListener('change', applyBookFilters);
+
+        // Modal Form Buka Tambah / Edit Buku
+        window.openBookModal = function(bookId = null) {
+            document.getElementById('bookModalAlert').style.display = 'none';
+            document.getElementById('bookForm').reset();
+            document.getElementById('bookId').value = '';
+
+            // Populate kategori select di modal
+            const catSelect = document.getElementById('bookCategoryId');
+            catSelect.innerHTML = '<option value="">Pilih Kategori</option>';
+            allCategories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat.id;
+                opt.textContent = cat.name;
+                catSelect.appendChild(opt);
+            });
+
+            if (bookId) {
+                const book = allBooks.find(b => b.id === bookId);
+                if (book) {
+                    document.getElementById('bookModalTitle').innerHTML = '<i class="bi bi-pencil me-2 text-primary"></i>Edit Master Buku';
+                    document.getElementById('bookId').value = book.id;
+                    document.getElementById('bookCode').value = book.book_code || '';
+                    document.getElementById('bookIsbn').value = book.isbn || '';
+                    document.getElementById('bookTitle').value = book.title || '';
+                    document.getElementById('bookAuthor').value = book.author || '';
+                    document.getElementById('bookPublisher').value = book.publisher || '';
+                    document.getElementById('bookYear').value = book.publication_year || '';
+                    document.getElementById('bookCategoryId').value = book.category_id || '';
+                    document.getElementById('bookLanguage').value = book.language || 'Indonesia';
+                    document.getElementById('bookDescription').value = book.description || '';
+                    document.getElementById('coverFileId').value = book.cover_file_id || '';
+                    document.getElementById('pdfFileId').value = book.pdf_file_id || '';
+                    document.getElementById('bookVisibility').value = book.visibility || 'GLOBAL';
+                    document.getElementById('bookStatus').value = book.status || 'ACTIVE';
+                }
+            } else {
+                document.getElementById('bookModalTitle').innerHTML = '<i class="bi bi-book me-2 text-primary"></i>Tambah Master Buku Baru';
+                // Generate auto book code prefix
+                document.getElementById('bookCode').value = 'BK-' + Date.now().toString().slice(-6);
+            }
+
+            if (!bookModalInstance) {
+                bookModalInstance = new bootstrap.Modal(document.getElementById('bookModal'));
+            }
+            bookModalInstance.show();
+        };
+
+        // Simpan Data Buku (Insert / Update)
+        window.saveBook = async function() {
+            const id = document.getElementById('bookId').value.trim();
+            const book_code = document.getElementById('bookCode').value.trim();
+            const isbn = document.getElementById('bookIsbn').value.trim() || null;
+            const title = document.getElementById('bookTitle').value.trim();
+            const author = document.getElementById('bookAuthor').value.trim() || null;
+            const publisher = document.getElementById('bookPublisher').value.trim() || null;
+            const yearStr = document.getElementById('bookYear').value.trim();
+            const publication_year = yearStr ? parseInt(yearStr, 10) : null;
+            const category_id = document.getElementById('bookCategoryId').value;
+            const language = document.getElementById('bookLanguage').value.trim() || 'Indonesia';
+            const description = document.getElementById('bookDescription').value.trim() || null;
+            const cover_file_id = document.getElementById('coverFileId').value.trim() || null;
+            const pdf_file_id = document.getElementById('pdfFileId').value.trim() || null;
+            const visibility = document.getElementById('bookVisibility').value;
+            const status = document.getElementById('bookStatus').value;
+
+            const alertBox = document.getElementById('bookModalAlert');
+            const saveBtn = document.getElementById('saveBookBtn');
+
+            if (!title) {
+                alertBox.innerHTML = '<div class="alert alert-warning py-2 mb-3">Judul buku wajib diisi.</div>';
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            if (!category_id) {
+                alertBox.innerHTML = '<div class="alert alert-warning py-2 mb-3">Silakan pilih kategori buku.</div>';
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan...';
+
+            const payload = {
+                book_code: book_code || ('BK-' + Date.now().toString().slice(-6)),
+                isbn,
+                title,
+                author,
+                publisher,
+                publication_year,
+                category_id,
+                language,
+                description,
+                cover_file_id,
+                pdf_file_id,
+                visibility,
+                status,
+                updated_at: new Date().toISOString()
+            };
+
+            try {
+                let err = null;
+                if (id) {
+                    const { error } = await supabase.from('books').update(payload).eq('id', id);
+                    err = error;
+                } else {
+                    const { error } = await supabase.from('books').insert([payload]);
+                    err = error;
+                }
+
+                if (err) throw err;
+
+                bookModalInstance.hide();
+                await loadBooks();
+                await loadStatistics();
+            } catch (error) {
+                console.error('Error saving book:', error);
+                alertBox.innerHTML = `<div class="alert alert-danger py-2 mb-3">Gagal menyimpan buku: ${error.message}</div>`;
+                alertBox.style.display = 'block';
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="bi bi-save me-1"></i> Simpan Buku';
+            }
+        };
+
+        // Archive / Toggle Status Buku
+        window.toggleBookStatus = async function(bookId, currentStatus) {
+            const nextStatus = currentStatus === 'ARCHIVED' ? 'ACTIVE' : 'ARCHIVED';
+            const actionName = nextStatus === 'ARCHIVED' ? 'mengarsipkan' : 'mengaktifkan kembali';
+
+            if (!confirm(`Apakah Anda yakin ingin ${actionName} buku ini?`)) return;
+
+            try {
+                const { error } = await supabase
+                    .from('books')
+                    .update({ status: nextStatus, updated_at: new Date().toISOString() })
+                    .eq('id', bookId);
+
+                if (error) throw error;
+                await loadBooks();
+            } catch (err) {
+                alert('Gagal memperbarui status buku: ' + err.message);
+            }
+        };
+
+        // =====================================================
+        // KATEGORI BUKU
+        // =====================================================
+        window.loadCategories = async function() {
+            const container = document.getElementById('categoryList');
+            container.innerHTML = `
+                <div class="col-12 text-center py-3 text-muted">
+                    <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                    Memuat kategori...
+                </div>
+            `;
+
+            try {
+                const { data, error } = await supabase
+                    .from('categories')
+                    .select('id, name, status, description')
+                    .order('name');
+
+                if (error) {
+                    container.innerHTML = `<div class="col-12 alert alert-danger">${error.message}</div>`;
+                    return;
+                }
+
+                allCategories = data || [];
+                document.getElementById('categoryCount').textContent = allCategories.length;
+
+                // Update filter dropdown di section buku
+                const catFilter = document.getElementById('filterCategorySelect');
+                catFilter.innerHTML = '<option value="">Semua Kategori</option>';
+                allCategories.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat.id;
+                    opt.textContent = cat.name;
+                    catFilter.appendChild(opt);
+                });
+
+                if (allCategories.length === 0) {
+                    container.innerHTML = `<div class="col-12 text-muted text-center py-3">Belum ada kategori buku.</div>`;
+                    return;
+                }
+
+                container.innerHTML = '';
+                allCategories.forEach(cat => {
+                    const col = document.createElement('div');
+                    col.className = 'col-sm-6 col-md-4 col-xl-3';
+                    col.innerHTML = `
+                        <div class="category-chip">
+                            <span class="fs-4">📖</span>
+                            <div class="overflow-hidden">
+                                <strong class="d-block text-truncate" style="color: #1e293b; font-size: 0.9rem;">${escapeHtml(cat.name)}</strong>
+                                <small class="text-muted d-block text-truncate" style="font-size: 0.75rem;">${escapeHtml(cat.description || 'Kategori aktif')}</small>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(col);
+                });
+            } catch (err) {
+                container.innerHTML = `<div class="col-12 text-danger">Gagal memuat kategori: ${err.message}</div>`;
+            }
+        };
+
+        // =====================================================
+        // UTILITY: REFRESH ALL & LOGOUT
+        // =====================================================
+        window.refreshAll = async function() {
+            await Promise.all([
+                loadStatistics(),
+                loadLibraries(),
+                loadCategories(),
+                loadBooks()
+            ]);
+        };
+
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                await supabase.auth.signOut();
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('userName');
+                window.location.href = 'login.html';
+            }
+        });
+
+        function escapeHtml(string) {
+            if (!string) return '';
+            return String(string)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // =====================================================
+        // INITIALIZATION
+        // =====================================================
+        const adminUser = await checkAdmin();
+        if (adminUser) {
+            await refreshAll();
+        }
+    </script>
+</body>
+
+</html>

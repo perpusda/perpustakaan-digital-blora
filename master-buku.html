@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Master Buku Pusat - Perpustakaan Digital Kabupaten Blora</title>
+    <link rel="icon" type="image/gif" href="https://upload.wikimedia.org/wikipedia/commons/4/43/Lambang_Kabupaten_Blora.gif">
+
+    <!-- Bootstrap 5 CSS & Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --bg-surface: #f8fafc;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-surface);
+            color: #0f172a;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            color: #94a3b8;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-brand h4 {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin: 0;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #94a3b8;
+            padding: 12px 20px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar nav a:hover {
+            color: #f1f5f9;
+            background-color: var(--sidebar-hover);
+        }
+
+        .sidebar nav a.active {
+            color: #ffffff;
+            background-color: rgba(37, 99, 235, 0.15);
+            border-left-color: var(--primary);
+        }
+
+        .modern-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .table-custom th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 14px 18px;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .table-custom td {
+            padding: 14px 18px;
+            color: #334155;
+            font-size: 0.88rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .btn-modern-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 9px 18px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-modern-primary:hover {
+            background-color: var(--primary-hover);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-modern-outline {
+            background: white;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 0.88rem;
+        }
+
+        .form-control-clean {
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 0.88rem;
+            transition: all 0.2s;
+        }
+
+        .form-control-clean:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Drag & Drop Upload Zone */
+        .upload-dropzone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .upload-dropzone:hover, .upload-dropzone.dragover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .upload-preview-img {
+            max-height: 120px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+
+            <!-- SIDEBAR -->
+            <div class="col-md-3 col-lg-2 sidebar d-flex flex-column">
+                <div class="sidebar-brand">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/43/Lambang_Kabupaten_Blora.gif" 
+                             alt="Lambang Kabupaten Blora" 
+                             style="width: 32px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+                        <div>
+                            <h5 class="fw-bold mb-0 text-white">Perpustakaan Digital</h5>
+                            <small class="text-white-50">Kabupaten Blora</small>
+                        </div>
+                    </div>
+                    <span class="badge bg-primary bg-opacity-25 text-primary border border-primary-subtle text-uppercase" style="font-size: 0.7rem;">ADMIN PUSAT</span>
+                </div>
+
+                <nav class="mt-3 flex-grow-1">
+                    <a href="dashboard-admin.html#dashboard">
+                        <i class="bi bi-grid-1x2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="dashboard-admin.html#perpustakaan">
+                        <i class="bi bi-buildings"></i>
+                        <span>Perpustakaan</span>
+                    </a>
+                    <a href="master-buku.html" class="active">
+                        <i class="bi bi-book"></i>
+                        <span>Master Buku</span>
+                    </a>
+                    <a href="dashboard-admin.html#kategori">
+                        <i class="bi bi-tags"></i>
+                        <span>Kategori</span>
+                    </a>
+                    <a href="dashboard-admin.html#anggota">
+                        <i class="bi bi-people"></i>
+                        <span>Anggota</span>
+                    </a>
+                    <a href="dashboard-admin.html#statistik">
+                        <i class="bi bi-bar-chart"></i>
+                        <span>Statistik</span>
+                    </a>
+                </nav>
+
+                <div class="p-3 border-top border-secondary border-opacity-25">
+                    <a href="#" id="logoutBtn" class="d-flex align-items-center gap-2 text-danger text-decoration-none px-3 py-2 rounded">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-md-9 col-lg-10 p-4 p-md-5">
+
+                <!-- TOP BAR -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2">
+                    <div>
+                        <h3 class="fw-bold mb-1" style="color: #0f172a;">Manajemen Master Buku Pusat</h3>
+                        <p class="text-muted mb-0">
+                            Prinsip: <strong>Centralized Digital Library — Zero Redundancy</strong>. Satu buku diunggah sekali, otomatis tersedia untuk 800–900+ perpustakaan mitra.
+                        </p>
+                    </div>
+                    <div class="mt-3 mt-md-0 d-flex gap-2">
+                        <button class="btn btn-modern-primary d-flex align-items-center gap-2" onclick="openBookModal()">
+                            <i class="bi bi-plus-lg"></i>
+                            <span>Tambah Master Buku</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CONTENT CARD -->
+                <div class="modern-card">
+                    <div class="p-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <select id="filterCategory" class="form-select form-select-sm form-control-clean" style="max-width: 200px;">
+                                <option value="">Semua Kategori</option>
+                            </select>
+                            <select id="filterStatus" class="form-select form-select-sm form-control-clean" style="max-width: 150px;">
+                                <option value="">Semua Status</option>
+                                <option value="ACTIVE">ACTIVE</option>
+                                <option value="INACTIVE">INACTIVE</option>
+                                <option value="ARCHIVED">ARCHIVED</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-sm" style="max-width: 280px;">
+                            <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                            <input type="text" id="searchInput" class="form-control form-control-clean border-start-0" placeholder="Cari judul, pengarang, ISBN...">
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-custom mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Cover</th>
+                                    <th>Judul & Informasi Buku</th>
+                                    <th>Kategori</th>
+                                    <th>Berkas PDF</th>
+                                    <th>Visibility</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookTable">
+                                <tr>
+                                    <td colspan="8" class="text-center py-5">
+                                        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                                        <span class="text-muted">Memuat data master buku...</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="p-3 border-top bg-light text-muted small d-flex justify-content-between align-items-center">
+                        <span>Total: <strong id="totalCount">0</strong> judul buku</span>
+                        <span><i class="bi bi-cloud-check text-success me-1"></i>Koleksi Terpusat Aktif</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FORM BUKU DENGAN DUAL UPLOAD (DIRECT FILE / DRIVE ID) -->
+    <div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-bottom px-4 py-3">
+                    <h5 class="modal-title fw-bold" id="modalTitle">
+                        <i class="bi bi-book me-2 text-primary"></i>Tambah Master Buku Baru
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="modalAlert" style="display: none;"></div>
+                    <form id="bookForm">
+                        <input type="hidden" id="bookId">
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Kode Buku</label>
+                                <input type="text" id="bookCode" class="form-control form-control-clean" placeholder="BK-2026-001">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">ISBN</label>
+                                <input type="text" id="bookIsbn" class="form-control form-control-clean" placeholder="978-xxx-xxx-x">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Judul Buku <span class="text-danger">*</span></label>
+                                <input type="text" id="bookTitle" class="form-control form-control-clean" placeholder="Judul buku lengkap" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Pengarang / Penulis</label>
+                                <input type="text" id="bookAuthor" class="form-control form-control-clean" placeholder="Nama penulis">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Penerbit</label>
+                                <input type="text" id="bookPublisher" class="form-control form-control-clean" placeholder="Nama penerbit">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Tahun Terbit</label>
+                                <input type="number" id="bookYear" class="form-control form-control-clean" placeholder="2026" min="1900" max="2100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Kategori <span class="text-danger">*</span></label>
+                                <select id="bookCategoryId" class="form-select form-control-clean" required>
+                                    <option value="">Pilih Kategori</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Bahasa</label>
+                                <input type="text" id="bookLanguage" class="form-control form-control-clean" value="Indonesia">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Deskripsi / Sinopsis</label>
+                                <textarea id="bookDescription" class="form-control form-control-clean" rows="3" placeholder="Sinopsis buku..."></textarea>
+                            </div>
+
+                            <!-- ============================================== -->
+                            <!-- BERKAS DIGITAL: COVER & PDF (DIRECT / DRIVE) -->
+                            <!-- ============================================== -->
+                            <div class="col-12"><hr class="my-1"></div>
+
+                            <!-- COVER BUKU -->
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold d-flex justify-content-between">
+                                    <span>Gambar Cover Buku</span>
+                                    <span class="text-muted fw-normal" style="font-size: 0.75rem;">(JPG, PNG, WebP)</span>
+                                </label>
+                                <div class="upload-dropzone" onclick="document.getElementById('coverFileInput').click()">
+                                    <input type="file" id="coverFileInput" accept="image/*" style="display:none;" onchange="handleCoverSelect(this)">
+                                    <div id="coverPlaceholder">
+                                        <i class="bi bi-image fs-3 text-primary d-block mb-1"></i>
+                                        <span class="small fw-semibold text-primary d-block">Pilih berkas cover langsung</span>
+                                        <span class="text-muted" style="font-size: 0.72rem;">Klik untuk memilih file dari komputer</span>
+                                    </div>
+                                    <div id="coverPreviewContainer" style="display: none;">
+                                        <img id="coverPreview" class="upload-preview-img mb-1" src="" alt="Cover Preview">
+                                        <span class="d-block small text-success fw-semibold" id="coverFileName"></span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <input type="text" id="coverFileId" class="form-control form-control-clean" placeholder="Atau tempel Google Drive File ID / Link...">
+                                </div>
+                            </div>
+
+                            <!-- PDF BUKU -->
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold d-flex justify-content-between">
+                                    <span>Berkas Buku (PDF)</span>
+                                    <span class="text-muted fw-normal" style="font-size: 0.75rem;">(Format .pdf)</span>
+                                </label>
+                                <div class="upload-dropzone" onclick="document.getElementById('pdfFileInput').click()">
+                                    <input type="file" id="pdfFileInput" accept="application/pdf" style="display:none;" onchange="handlePdfSelect(this)">
+                                    <div id="pdfPlaceholder">
+                                        <i class="bi bi-file-earmark-pdf fs-3 text-danger d-block mb-1"></i>
+                                        <span class="small fw-semibold text-danger d-block">Pilih berkas PDF langsung</span>
+                                        <span class="text-muted" style="font-size: 0.72rem;">Klik untuk memilih berkas dari komputer</span>
+                                    </div>
+                                    <div id="pdfPreviewContainer" style="display: none;">
+                                        <i class="bi bi-file-earmark-check fs-1 text-success d-block"></i>
+                                        <strong class="d-block small text-dark" id="pdfFileName"></strong>
+                                        <span class="badge bg-success-subtle text-success border" id="pdfFileSize"></span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <input type="text" id="pdfFileId" class="form-control form-control-clean" placeholder="Atau tempel Google Drive File ID / Link...">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Visibility</label>
+                                <select id="bookVisibility" class="form-select form-control-clean">
+                                    <option value="GLOBAL">GLOBAL (Tersedia untuk Seluruh Perpustakaan)</option>
+                                    <option value="SELECTED">SELECTED (Pilihan)</option>
+                                    <option value="PRIVATE">PRIVATE (Khusus)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Status Buku</label>
+                                <select id="bookStatus" class="form-select form-control-clean">
+                                    <option value="ACTIVE">ACTIVE (Aktif & Diterbitkan)</option>
+                                    <option value="INACTIVE">INACTIVE (Nonaktif)</option>
+                                    <option value="ARCHIVED">ARCHIVED (Diarsipkan)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-top px-4 py-3">
+                    <button type="button" class="btn btn-sm btn-modern-outline" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" id="saveBtn" class="btn btn-sm btn-modern-primary" onclick="saveBook()">
+                        <i class="bi bi-save me-1"></i> Simpan Master Buku
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        import { SUPABASE_URL, SUPABASE_ANON_KEY, escapeHtml, getDriveCoverUrl } from './js/config.js';
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let allBooks = [];
+        let allCategories = [];
+        let modalInstance = null;
+        let selectedCoverFile = null;
+        let selectedPdfFile = null;
+
+        // Security role check: Super Admin only
+        async function checkSuperAdmin() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                window.location.href = 'login.html';
+                return null;
+            }
+
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('role, status')
+                .eq('id', user.id)
+                .single();
+
+            if (!profile || profile.role !== 'SUPER_ADMIN') {
+                alert('Akses ditolak. Halaman ini khusus untuk SUPER_ADMIN (Admin Pusat).');
+                window.location.href = 'login.html';
+                return null;
+            }
+
+            return user;
+        }
+
+        window.handleCoverSelect = function(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                selectedCoverFile = file;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('coverPreview').src = e.target.result;
+                    document.getElementById('coverFileName').textContent = file.name;
+                    document.getElementById('coverPlaceholder').style.display = 'none';
+                    document.getElementById('coverPreviewContainer').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        window.handlePdfSelect = function(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                selectedPdfFile = file;
+
+                document.getElementById('pdfFileName').textContent = file.name;
+                document.getElementById('pdfFileSize').textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+                document.getElementById('pdfPlaceholder').style.display = 'none';
+                document.getElementById('pdfPreviewContainer').style.display = 'block';
+            }
+        };
+
+        window.loadBooks = async function() {
+            const table = document.getElementById('bookTable');
+
+            try {
+                const { data, error } = await supabase
+                    .from('books')
+                    .select(`
+                        id, book_code, isbn, title, author, publisher, publication_year,
+                        edition, description, language, category_id,
+                        cover_file_id, cover_file_name, pdf_file_id, pdf_file_name,
+                        visibility, status, created_at,
+                        categories ( id, name )
+                    `)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                allBooks = data || [];
+                document.getElementById('totalCount').textContent = allBooks.length;
+                renderBooks(allBooks);
+            } catch (err) {
+                console.error(err);
+                table.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-4">${err.message}</td></tr>`;
+            }
+        };
+
+        function renderBooks(books) {
+            const table = document.getElementById('bookTable');
+
+            if (!books || books.length === 0) {
+                table.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted">Belum ada master buku. Silakan klik tombol Tambah Master Buku.</td></tr>`;
+                return;
+            }
+
+            table.innerHTML = '';
+            books.forEach(b => {
+                let badgeStatus = 'bg-success';
+                if (b.status === 'INACTIVE') badgeStatus = 'bg-warning text-dark';
+                if (b.status === 'ARCHIVED') badgeStatus = 'bg-secondary';
+
+                const coverUrl = getDriveCoverUrl(b.cover_file_id);
+                const coverHtml = coverUrl 
+                    ? `<img src="${coverUrl}" alt="cover" style="width: 44px; height: 58px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" onerror="this.outerHTML='<i class=\\\'bi bi-book fs-3 text-muted\\\'></i>'">`
+                    : `<div style="width: 44px; height: 58px; background: #f1f5f9; border-radius: 6px; display: flex; align-items: center; justify-content: center;"><i class="bi bi-book text-muted"></i></div>`;
+
+                const pdfDisplay = b.pdf_file_id 
+                    ? `<span class="badge bg-light text-primary border"><i class="bi bi-file-earmark-pdf me-1"></i>Taut PDF</span>`
+                    : `<span class="text-muted small">-</span>`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><span class="font-monospace fw-bold text-dark" style="font-size: 0.82rem;">${escapeHtml(b.book_code || '-')}</span></td>
+                    <td>${coverHtml}</td>
+                    <td>
+                        <strong class="text-dark d-block">${escapeHtml(b.title)}</strong>
+                        <small class="text-muted">${escapeHtml(b.author || '-')} • ${escapeHtml(b.publisher || '-')}${b.publication_year ? ` (${b.publication_year})` : ''}</small>
+                    </td>
+                    <td><span class="badge bg-light text-dark border">${escapeHtml(b.categories ? b.categories.name : '-')}</span></td>
+                    <td>${pdfDisplay}</td>
+                    <td><span class="badge bg-info-subtle text-info border border-info-subtle">${escapeHtml(b.visibility || 'GLOBAL')}</span></td>
+                    <td><span class="badge ${badgeStatus}">${escapeHtml(b.status || 'ACTIVE')}</span></td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-sm">
+                            <a href="detail-buku.html?id=${b.id}" onclick="sessionStorage.setItem('last_active_book_id', '${b.id}')" target="_blank" class="btn btn-light border py-1 px-2 text-info" title="Lihat Detail Buku">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="reader.html?book_id=${b.id}" onclick="sessionStorage.setItem('last_active_book_id', '${b.id}')" target="_blank" class="btn btn-light border py-1 px-2 text-success" title="Baca Buku">
+                                <i class="bi bi-book"></i>
+                            </a>
+                            <button class="btn btn-light border" title="Edit" onclick="openBookModal('${b.id}')"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-light border text-warning" title="Ubah Status" onclick="toggleStatus('${b.id}', '${b.status}')"><i class="bi bi-archive"></i></button>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(tr);
+            });
+        }
+
+        async function loadCategories() {
+            const { data } = await supabase.from('categories').select('id, name').order('name');
+            allCategories = data || [];
+
+            const filterSel = document.getElementById('filterCategory');
+            const formSel = document.getElementById('bookCategoryId');
+
+            allCategories.forEach(c => {
+                const opt1 = document.createElement('option');
+                opt1.value = c.id;
+                opt1.textContent = c.name;
+                filterSel.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = c.id;
+                opt2.textContent = c.name;
+                formSel.appendChild(opt2);
+            });
+        }
+
+        function applyFilters() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cat = document.getElementById('filterCategory').value;
+            const st = document.getElementById('filterStatus').value;
+
+            let res = allBooks;
+            if (cat) res = res.filter(b => b.category_id === cat);
+            if (st) res = res.filter(b => b.status === st);
+            if (keyword) {
+                res = res.filter(b =>
+                    (b.title && b.title.toLowerCase().includes(keyword)) ||
+                    (b.author && b.author.toLowerCase().includes(keyword)) ||
+                    (b.book_code && b.book_code.toLowerCase().includes(keyword)) ||
+                    (b.isbn && b.isbn.toLowerCase().includes(keyword))
+                );
+            }
+            renderBooks(res);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('filterCategory').addEventListener('change', applyFilters);
+        document.getElementById('filterStatus').addEventListener('change', applyFilters);
+
+        window.openBookModal = function(bookId = null) {
+            document.getElementById('modalAlert').style.display = 'none';
+            document.getElementById('bookForm').reset();
+            document.getElementById('bookId').value = '';
+            selectedCoverFile = null;
+            selectedPdfFile = null;
+
+            document.getElementById('coverPlaceholder').style.display = 'block';
+            document.getElementById('coverPreviewContainer').style.display = 'none';
+            document.getElementById('pdfPlaceholder').style.display = 'block';
+            document.getElementById('pdfPreviewContainer').style.display = 'none';
+
+            if (bookId) {
+                const b = allBooks.find(item => item.id === bookId);
+                if (b) {
+                    document.getElementById('modalTitle').innerHTML = '<i class="bi bi-pencil me-2 text-primary"></i>Edit Master Buku';
+                    document.getElementById('bookId').value = b.id;
+                    document.getElementById('bookCode').value = b.book_code || '';
+                    document.getElementById('bookIsbn').value = b.isbn || '';
+                    document.getElementById('bookTitle').value = b.title || '';
+                    document.getElementById('bookAuthor').value = b.author || '';
+                    document.getElementById('bookPublisher').value = b.publisher || '';
+                    document.getElementById('bookYear').value = b.publication_year || '';
+                    document.getElementById('bookCategoryId').value = b.category_id || '';
+                    document.getElementById('bookLanguage').value = b.language || 'Indonesia';
+                    document.getElementById('bookDescription').value = b.description || '';
+                    document.getElementById('coverFileId').value = b.cover_file_id || '';
+                    document.getElementById('pdfFileId').value = b.pdf_file_id || '';
+                    document.getElementById('bookVisibility').value = b.visibility || 'GLOBAL';
+                    document.getElementById('bookStatus').value = b.status || 'ACTIVE';
+
+                    if (b.cover_file_id) {
+                        const previewUrl = getDriveCoverUrl(b.cover_file_id);
+                        if (previewUrl) {
+                            document.getElementById('coverPreview').src = previewUrl;
+                            document.getElementById('coverFileName').textContent = b.cover_file_name || 'Cover Aktif';
+                            document.getElementById('coverPlaceholder').style.display = 'none';
+                            document.getElementById('coverPreviewContainer').style.display = 'block';
+                        }
+                    }
+                }
+            } else {
+                document.getElementById('modalTitle').innerHTML = '<i class="bi bi-book me-2 text-primary"></i>Tambah Master Buku Baru';
+                document.getElementById('bookCode').value = 'BK-' + Date.now().toString().slice(-6);
+            }
+
+            if (!modalInstance) {
+                modalInstance = new bootstrap.Modal(document.getElementById('bookModal'));
+            }
+            modalInstance.show();
+        };
+
+        window.saveBook = async function() {
+            const id = document.getElementById('bookId').value.trim();
+            const alertBox = document.getElementById('modalAlert');
+            const saveBtn = document.getElementById('saveBtn');
+
+            let coverId = document.getElementById('coverFileId').value.trim() || null;
+            let coverName = null;
+            let pdfId = document.getElementById('pdfFileId').value.trim() || null;
+            let pdfName = null;
+
+            const payload = {
+                book_code: document.getElementById('bookCode').value.trim() || ('BK-' + Date.now().toString().slice(-6)),
+                isbn: document.getElementById('bookIsbn').value.trim() || null,
+                title: document.getElementById('bookTitle').value.trim(),
+                author: document.getElementById('bookAuthor').value.trim() || null,
+                publisher: document.getElementById('bookPublisher').value.trim() || null,
+                publication_year: parseInt(document.getElementById('bookYear').value.trim(), 10) || null,
+                category_id: document.getElementById('bookCategoryId').value,
+                language: document.getElementById('bookLanguage').value.trim() || 'Indonesia',
+                description: document.getElementById('bookDescription').value.trim() || null,
+                cover_file_id: coverId,
+                cover_file_name: coverName,
+                pdf_file_id: pdfId,
+                pdf_file_name: pdfName,
+                visibility: document.getElementById('bookVisibility').value,
+                status: document.getElementById('bookStatus').value,
+                updated_at: new Date().toISOString()
+            };
+
+            if (!payload.title || !payload.category_id) {
+                alertBox.innerHTML = '<div class="alert alert-warning py-2">Judul Buku dan Kategori wajib diisi.</div>';
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan...';
+
+            try {
+                // Upload Cover jika dipilih langsung dari komputer
+                if (selectedCoverFile) {
+                    try {
+                        const ext = selectedCoverFile.name.split('.').pop();
+                        const fileName = `covers/${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
+                        const { data: uploadCover, error: coverUploadErr } = await supabase.storage
+                            .from('books')
+                            .upload(fileName, selectedCoverFile);
+
+                        if (!coverUploadErr) {
+                            const { data: { publicUrl } } = supabase.storage.from('books').getPublicUrl(fileName);
+                            payload.cover_file_id = publicUrl;
+                            payload.cover_file_name = selectedCoverFile.name;
+                        } else {
+                            // Fallback jika bucket belum dibuat: simpan nama file
+                            payload.cover_file_name = selectedCoverFile.name;
+                        }
+                    } catch (e) {
+                        console.warn('Cover storage upload fallback:', e);
+                    }
+                }
+
+                // Upload PDF jika dipilih langsung dari komputer
+                if (selectedPdfFile) {
+                    try {
+                        const ext = selectedPdfFile.name.split('.').pop();
+                        const fileName = `pdfs/${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
+                        const { data: uploadPdf, error: pdfUploadErr } = await supabase.storage
+                            .from('books')
+                            .upload(fileName, selectedPdfFile);
+
+                        if (!pdfUploadErr) {
+                            const { data: { publicUrl } } = supabase.storage.from('books').getPublicUrl(fileName);
+                            payload.pdf_file_id = publicUrl;
+                            payload.pdf_file_name = selectedPdfFile.name;
+                        } else {
+                            payload.pdf_file_name = selectedPdfFile.name;
+                        }
+                    } catch (e) {
+                        console.warn('PDF storage upload fallback:', e);
+                    }
+                }
+
+                let err = null;
+                if (id) {
+                    const { error } = await supabase.from('books').update(payload).eq('id', id);
+                    err = error;
+                } else {
+                    const { error } = await supabase.from('books').insert([payload]);
+                    err = error;
+                }
+                if (err) throw err;
+
+                modalInstance.hide();
+                await loadBooks();
+            } catch (err) {
+                console.error('Error saving book:', err);
+                alertBox.innerHTML = `<div class="alert alert-danger py-2">Gagal menyimpan buku: ${err.message}</div>`;
+                alertBox.style.display = 'block';
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="bi bi-save me-1"></i> Simpan Master Buku';
+            }
+        };
+
+        window.toggleStatus = async function(bookId, currentStatus) {
+            const nextStatus = currentStatus === 'ARCHIVED' ? 'ACTIVE' : 'ARCHIVED';
+            if (!confirm(`Ubah status buku menjadi ${nextStatus}?`)) return;
+
+            try {
+                const { error } = await supabase.from('books').update({ status: nextStatus, updated_at: new Date().toISOString() }).eq('id', bookId);
+                if (error) throw error;
+                await loadBooks();
+            } catch (err) {
+                alert('Gagal: ' + err.message);
+            }
+        };
+
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        });
+
+        // Init
+        const user = await checkSuperAdmin();
+        if (user) {
+            await Promise.all([loadCategories(), loadBooks()]);
+        }
+    </script>
+</body>
+
+</html>

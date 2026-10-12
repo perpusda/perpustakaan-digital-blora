@@ -548,13 +548,16 @@
 
                 <!-- SECTION: KATEGORI -->
                 <div id="kategori" class="modern-card mb-4 animate-fade-in">
-                    <div class="card-header-clean">
+                    <div class="card-header-clean flex-wrap gap-2">
                         <div class="d-flex align-items-center gap-2">
                             <span class="p-2 rounded-3 bg-warning bg-opacity-10 text-warning">
                                 <i class="bi bi-tags"></i>
                             </span>
                             <div>
-                                <h5 class="fw-bold mb-0" style="color: #0f172a;">Kategori Buku</h5>
+                                <div class="d-flex align-items-center gap-2">
+                                    <h5 class="fw-bold mb-0" style="color: #0f172a;">Kategori Buku</h5>
+                                    <span class="badge bg-warning-subtle text-dark border border-warning-subtle rounded-pill px-2 py-1 small" id="categoryCount">0 Kategori</span>
+                                </div>
                                 <small class="text-muted">Klasifikasi buku perpustakaan</small>
                             </div>
                         </div>
@@ -1411,17 +1414,22 @@
                 }
 
                 allCategories = data || [];
-                document.getElementById('categoryCount').textContent = allCategories.length;
+                const catCountEl = document.getElementById('categoryCount');
+                if (catCountEl) {
+                    catCountEl.textContent = `${allCategories.length} Kategori`;
+                }
 
                 // Update filter dropdown di section buku
                 const catFilter = document.getElementById('filterCategorySelect');
-                catFilter.innerHTML = '<option value="">Semua Kategori</option>';
-                allCategories.forEach(cat => {
-                    const opt = document.createElement('option');
-                    opt.value = cat.id;
-                    opt.textContent = cat.name;
-                    catFilter.appendChild(opt);
-                });
+                if (catFilter) {
+                    catFilter.innerHTML = '<option value="">Semua Kategori</option>';
+                    allCategories.forEach(cat => {
+                        const opt = document.createElement('option');
+                        opt.value = cat.id;
+                        opt.textContent = cat.name;
+                        catFilter.appendChild(opt);
+                    });
+                }
 
                 if (allCategories.length === 0) {
                     container.innerHTML = `<div class="col-12 text-muted text-center py-3">Belum ada kategori buku.</div>`;

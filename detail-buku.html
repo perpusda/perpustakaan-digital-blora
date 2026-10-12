@@ -210,7 +210,7 @@
     <!-- Logic Detail Buku -->
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-        import { SUPABASE_URL, SUPABASE_ANON_KEY, escapeHtml, getDriveCoverUrl } from './js/config.js';
+        import { SUPABASE_URL, SUPABASE_ANON_KEY, escapeHtml, getDriveCoverUrl, recordVisit } from './js/config.js';
 
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -325,6 +325,13 @@
                 // Tampilkan container buku
                 document.getElementById('bookDetailContainer').style.display = 'block';
                 document.title = `${book.title} - Perpustakaan Digital Blora`;
+
+                // Rekam kunjungan detail buku (umum maupun anggota)
+                recordVisit(supabase, {
+                    libraryId: currentMember ? currentMember.library_id : null,
+                    page: 'detail_buku',
+                    bookId: book.id
+                });
 
                 // Status banner jika buku bukan ACTIVE
                 if (book.status !== 'ACTIVE') {

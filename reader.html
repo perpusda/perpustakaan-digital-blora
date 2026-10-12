@@ -179,7 +179,7 @@
     <!-- Script Reader -->
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-        import { SUPABASE_URL, SUPABASE_ANON_KEY, getDriveEmbedUrl } from './js/config.js';
+        import { SUPABASE_URL, SUPABASE_ANON_KEY, getDriveEmbedUrl, recordVisit } from './js/config.js';
 
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -270,6 +270,24 @@
                 }
             }
 
+            // Jika pembaca adalah tamu/guest dan terdapat perpusParam di URL
+            if (!currentLibraryId && perpusParam) {
+                try {
+                    const { data: libs } = await supabase
+                        .from('libraries')
+                        .select('id, name, library_code')
+                        .eq('status', 'ACTIVE');
+                    if (libs) {
+                        const q = perpusParam.toLowerCase();
+                        const found = libs.find(l => {
+                            const slug = (l.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                            return slug === q || (l.library_code || '').toLowerCase() === q || l.id === q;
+                        });
+                        if (found) currentLibraryId = found.id;
+                    }
+                } catch (_) {}
+            }
+
             loadBookAndFile();
         }
 
@@ -286,6 +304,13 @@
                     window.location.href = 'index.html';
                     return;
                 }
+
+                // Rekam aktivitas baca buku (termasuk untuk non-anggota/tamu)
+                recordVisit(supabase, {
+                    libraryId: currentLibraryId || null,
+                    page: 'baca_buku',
+                    bookId: book.id
+                });
 
                 document.title = `Membaca: ${book.title} - Perpus Blora`;
                 document.getElementById('bookHeaderTitle').textContent = book.title;

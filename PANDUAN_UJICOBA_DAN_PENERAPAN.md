@@ -31,18 +31,41 @@ Sebelum melakukan ujicoba di antarmuka web, jalankan SQL Migration untuk menamba
 4. Salin dan tempelkan skrip SQL berikut:
 
 ```sql
--- 1. Tambahkan kolom slug pada tabel libraries
+-- 1. Tambahkan kolom slug jika belum ada
 ALTER TABLE public.libraries 
 ADD COLUMN IF NOT EXISTS slug text;
 
--- 2. Buat index unique untuk slug
-CREATE UNIQUE INDEX IF NOT EXISTS idx_libraries_slug 
-ON public.libraries (slug);
+-- 2. HAPUS index/constraint lama terlebih dahulu agar tidak menolak pembaruan data kembar
+ALTER TABLE public.libraries DROP CONSTRAINT IF EXISTS idx_libraries_slug CASCADE;
+DROP INDEX IF EXISTS public.idx_libraries_slug CASCADE;
 
--- 3. Isi slug awal otomatis berdasarkan nama perpustakaan yang ada
-UPDATE public.libraries 
-SET slug = lower(regexp_replace(name, '[^a-zA-Z0-9]+', '-', 'g'))
-WHERE slug IS NULL;
+-- 3. Isi dan buat slug unik untuk SEMUA perpustakaan (data kembar otomatis diberi akhiran -2, -3, dst)
+WITH numbered_libs AS (
+    SELECT id, 
+           COALESCE(
+               NULLIF(lower(trim(both '-' from regexp_replace(COALESCE(name, 'perpus'), '[^a-zA-Z0-9]+', '-', 'g'))), ''),
+               'perpus'
+           ) AS base_slug,
+           ROW_NUMBER() OVER (
+               PARTITION BY COALESCE(
+                   NULLIF(lower(trim(both '-' from regexp_replace(COALESCE(name, 'perpus'), '[^a-zA-Z0-9]+', '-', 'g'))), ''),
+                   'perpus'
+               )
+               ORDER BY id ASC
+           ) AS rn
+    FROM public.libraries
+)
+UPDATE public.libraries l
+SET slug = CASE 
+    WHEN nl.rn = 1 THEN nl.base_slug
+    ELSE nl.base_slug || '-' || nl.rn
+END
+FROM numbered_libs nl
+WHERE l.id = nl.id;
+
+-- 4. Buat kembali UNIQUE INDEX (Pasti berhasil karena semua data sudah unik)
+CREATE UNIQUE INDEX idx_libraries_slug 
+ON public.libraries (slug);
 
 -- 4. Fungsi & Trigger Pencegahan Eskalasi Role (Security)
 CREATE OR REPLACE FUNCTION public.protect_user_role_escalation()
@@ -95,6 +118,39 @@ USING (
         WHERE id = auth.uid() AND role = 'SUPER_ADMIN'
     )
 );
+
+-- 7. Tabel Log Kunjungan Portal (Mendukung pengunjung umum/tamu non-anggota & anggota)
+CREATE TABLE IF NOT EXISTS public.library_visits (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    library_id UUID REFERENCES public.libraries(id) ON DELETE CASCADE,
+    visitor_session_id TEXT NOT NULL,
+    user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    is_member BOOLEAN DEFAULT false,
+    page_visited TEXT DEFAULT 'portal',
+    book_id UUID REFERENCES public.books(id) ON DELETE SET NULL,
+    user_agent TEXT,
+    visited_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_library_visits_lib_time 
+ON public.library_visits (library_id, visited_at);
+
+CREATE INDEX IF NOT EXISTS idx_library_visits_session 
+ON public.library_visits (visitor_session_id, visited_at);
+
+ALTER TABLE public.library_visits ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public anonymous can record visits" ON public.library_visits;
+CREATE POLICY "Public anonymous can record visits" 
+ON public.library_visits FOR INSERT 
+TO anon, authenticated
+WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow select library visits" ON public.library_visits;
+CREATE POLICY "Allow select library visits" 
+ON public.library_visits FOR SELECT 
+TO anon, authenticated 
+USING (true);
 ```
 5. Klik tombol **Run** (atau tekan `Ctrl + Enter`). Pastikan output menampilkan: `Success. No rows returned`.
 
@@ -129,8 +185,9 @@ Memastikan bug fatal *"Memuat..."* sudah teratasi dan data perpustakaan tampil l
 3. Klik tombol **Login**.
 4. Sistem akan mengarahkan ke `dashboard-admin.html`.
 5. **Verifikasi Tampilan:**
-   - [x] Kartu statistik (Perpustakaan, Master Buku, Anggota, Kategori) menampilkan angka akurat.
-   - [x] Tabel **Daftar Perpustakaan** langsung menampilkan data yang telah didaftarkan (contoh: *Perpustakaan coba*, BLR-491307A0).
+   - [x] Kartu statistik (Perpustakaan, Master Buku, **Total Kunjungan**, **Kunjungan Hari Ini**) menampilkan angka akurat.
+   - [x] Tabel **Daftar Perpustakaan** langsung menampilkan data yang telah didaftarkan.
+   - [x] Seksi **Tabel Kunjungan Pemustaka:** menampilkan log kunjungan real-time dengan filter perpustakaan (semua / per mitra / pusat), status pengunjung (tamu umum / anggota), serta pencarian aktivitas membaca.
    - [x] Kolom tabel lengkap: **Kode**, **Nama Perpustakaan**, **Jenis**, **Desa/Kelurahan**, **Kecamatan**, **Status**, **Tanggal Daftar**, dan **Aksi**.
    - [x] Klik tombol **Detail** pada salah satu baris; modal detail perpustakaan akan terbuka rapi.
    - [x] Coba ketik nama perpustakaan di kolom pencarian tabel; filter berjalan secara instan.
@@ -212,7 +269,11 @@ Menguji alur pendaftaran mandiri perpustakaan sekolah/desa dan memastikan akun l
    - [x] Tampil nama perpustakaan *"Perpustakaan SMP Negeri 1 Blora"*.
    - [x] Tampil info slug URL portal publik: `?perpus=perpustakaan-smp-negeri-1-blora`.
    - [x] Tampil tombol **Lihat Portal Publik** yang langsung membuka portal white-label miliknya.
-   - [x] Kartu **Buku Tersedia** langsung menampilkan jumlah buku katalog pusat.
+   - [x] **Kartu Statistik Kunjungan Portal (3 Kartu Utama):**
+     - **Total Kunjungan:** Total pembaca yang mengunjungi portal (tamu umum maupun anggota).
+     - **Kunjungan Hari Ini:** Jumlah pengunjung pada tanggal hari ini.
+     - **Kunjungan Bulan Ini:** Jumlah pengunjung pada bulan berjalan.
+   - [x] **Dashboard Koleksi Buku Terpusat:** Menampilkan katalog lengkap dengan pencarian live (judul/penulis/penerbit/ISBN) dan filter kategori.
    - [x] **Zero Redundancy Rule:** **TIDAK ADA** menu *"Upload Buku"*, *"Tambah Koleksi"*, atau *"Upload PDF"*.
 
 ---

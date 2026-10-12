@@ -323,7 +323,7 @@
     <!-- White-Label & Catalog Logic -->
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-        import { SUPABASE_URL, SUPABASE_ANON_KEY, escapeHtml, slugify, getDriveCoverUrl } from './js/config.js';
+        import { SUPABASE_URL, SUPABASE_ANON_KEY, escapeHtml, slugify, getDriveCoverUrl, recordVisit } from './js/config.js';
 
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -627,6 +627,13 @@
         // =====================================================
         const libraryConfig = await resolveWhiteLabel();
         applyPortalTheme(libraryConfig);
+
+        // Rekam kunjungan portal otomatis (Bebas untuk umum/non-anggota & anggota)
+        recordVisit(supabase, {
+            libraryId: (libraryConfig && libraryConfig !== 'NOT_FOUND') ? libraryConfig.id : null,
+            page: 'portal'
+        });
+
         await Promise.all([
             checkNavbarAuth(),
             loadCategories(),

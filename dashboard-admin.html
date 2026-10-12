@@ -327,9 +327,9 @@
                         <i class="bi bi-tags"></i>
                         <span>Kategori</span>
                     </a>
-                    <a href="#anggota">
-                        <i class="bi bi-people"></i>
-                        <span>Anggota</span>
+                    <a href="#kunjungan">
+                        <i class="bi bi-people-fill"></i>
+                        <span>Kunjungan</span>
                     </a>
                     <a href="#statistik">
                         <i class="bi bi-bar-chart"></i>
@@ -397,30 +397,30 @@
                         </div>
                     </div>
 
-                    <!-- Anggota -->
+                    <!-- Total Kunjungan (Pengganti Anggota) -->
                     <div class="col-sm-6 col-xl-3">
                         <div class="stat-card d-flex align-items-center justify-content-between">
                             <div>
-                                <div class="text-muted small fw-semibold text-uppercase tracking-wider">Anggota</div>
-                                <h3 class="fw-bold mt-2 mb-0" id="memberCount">0</h3>
-                                <small class="text-muted" style="font-size: 0.76rem;">Pembaca aktif</small>
+                                <div class="text-muted small fw-semibold text-uppercase tracking-wider">Total Kunjungan</div>
+                                <h3 class="fw-bold mt-2 mb-0 text-primary" id="totalVisitCount">0</h3>
+                                <small class="text-muted" style="font-size: 0.76rem;">Portal se-Kabupaten Blora</small>
                             </div>
-                            <div class="stat-icon-wrapper" style="background-color: #faf5ff; color: #9333ea;">
-                                <i class="bi bi-people"></i>
+                            <div class="stat-icon-wrapper" style="background-color: #eff6ff; color: #2563eb;">
+                                <i class="bi bi-people-fill"></i>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Kategori -->
+                    <!-- Kunjungan Hari Ini -->
                     <div class="col-sm-6 col-xl-3">
                         <div class="stat-card d-flex align-items-center justify-content-between">
                             <div>
-                                <div class="text-muted small fw-semibold text-uppercase tracking-wider">Kategori</div>
-                                <h3 class="fw-bold mt-2 mb-0" id="categoryCount">0</h3>
-                                <small class="text-muted" style="font-size: 0.76rem;">Klasifikasi buku</small>
+                                <div class="text-muted small fw-semibold text-uppercase tracking-wider">Kunjungan Hari Ini</div>
+                                <h3 class="fw-bold mt-2 mb-0 text-success" id="todayVisitCount">0</h3>
+                                <small class="text-muted" style="font-size: 0.76rem;">Pengunjung aktif hari ini</small>
                             </div>
-                            <div class="stat-icon-wrapper" style="background-color: #fff7ed; color: #ea580c;">
-                                <i class="bi bi-tags"></i>
+                            <div class="stat-icon-wrapper" style="background-color: #ecfdf5; color: #059669;">
+                                <i class="bi bi-calendar-check-fill"></i>
                             </div>
                         </div>
                     </div>
@@ -573,61 +573,117 @@
                     </div>
                 </div>
 
-                <!-- SECTION: ANGGOTA & STATISTIK -->
-                <div class="row g-4" id="statistik">
-                    <div class="col-lg-6" id="anggota">
-                        <div class="modern-card h-100 animate-fade-in">
-                            <div class="card-header-clean">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="p-2 rounded-3 bg-info bg-opacity-10 text-info">
-                                        <i class="bi bi-people"></i>
-                                    </span>
-                                    <div>
-                                        <h5 class="fw-bold mb-0" style="color: #0f172a;">Ringkasan Anggota</h5>
-                                        <small class="text-muted">Pembaca terdaftar</small>
-                                    </div>
+                <!-- SECTION: TABEL KUNJUNGAN PEMUSTAKA (PENGGANTI ANGGOTA) -->
+                <div id="kunjungan" class="modern-card mb-4 animate-fade-in">
+                    <div class="card-header-clean flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
+                                <i class="bi bi-people-fill"></i>
+                            </span>
+                            <div>
+                                <h5 class="fw-bold mb-0" style="color: #0f172a;">Tabel Kunjungan Pemustaka</h5>
+                                <small class="text-muted">Rekap aktivitas pembaca (tamu umum & anggota) dari seluruh portal Kabupaten Blora</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 small">
+                                Total: <strong id="summaryTotalVisits">0</strong>
+                            </span>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 small">
+                                Hari Ini: <strong id="summaryTodayVisits">0</strong>
+                            </span>
+                            <span class="badge border px-3 py-2 small" style="background: #faf5ff; color: #7c3aed; border-color: #ddd6fe;">
+                                Bulan Ini: <strong id="summaryMonthVisits">0</strong>
+                            </span>
+                            <button class="btn btn-sm btn-modern-outline d-flex align-items-center gap-1" onclick="loadVisits()">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Toolbar Filter & Search Kunjungan -->
+                    <div class="p-3 bg-light border-bottom">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-5 col-lg-5">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                                    <input type="text" class="form-control form-control-clean border-start-0" id="visitSearchInput" placeholder="Cari aktivitas, perpustakaan, perangkat...">
                                 </div>
                             </div>
-                            <div class="card-body p-4">
-                                <p class="text-muted mb-3">
-                                    Admin Pusat dapat memonitor pertumbuhan seluruh anggota terdaftar dari seluruh perpustakaan di Kabupaten Blora.
-                                </p>
-                                <div class="p-3 bg-light rounded-3 d-flex justify-content-between align-items-center">
-                                    <span class="text-secondary fw-medium">Total Anggota Terverifikasi:</span>
-                                    <span class="badge bg-primary fs-6 px-3 py-2" id="memberSummaryCount">0</span>
-                                </div>
+                            <div class="col-md-4 col-lg-4">
+                                <select class="form-select form-control-clean" id="visitLibraryFilter">
+                                    <option value="">Semua Perpustakaan (Termasuk Portal Utama)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 col-lg-3">
+                                <select class="form-select form-control-clean" id="visitTypeFilter">
+                                    <option value="">Semua Status Pengunjung</option>
+                                    <option value="guest">Tamu / Non-Anggota</option>
+                                    <option value="member">Anggota Terdaftar</option>
+                                </select>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-6">
-                        <div class="modern-card h-100 animate-fade-in">
-                            <div class="card-header-clean">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="p-2 rounded-3 bg-secondary bg-opacity-10 text-secondary">
-                                        <i class="bi bi-speedometer2"></i>
-                                    </span>
-                                    <div>
-                                        <h5 class="fw-bold mb-0" style="color: #0f172a;">Status & Kesehatan Sistem</h5>
-                                        <small class="text-muted">Infrastruktur Supabase</small>
-                                    </div>
+                    <!-- Tabel Log Kunjungan -->
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Waktu Kunjungan</th>
+                                    <th>Perpustakaan Tujuan</th>
+                                    <th>Status Pengunjung</th>
+                                    <th>Halaman / Aktivitas</th>
+                                    <th>Perangkat / Info</th>
+                                </tr>
+                            </thead>
+                            <tbody id="visitTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">
+                                        <div class="spinner-border spinner-border-sm text-primary me-2"></div> Memuat data kunjungan...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-3 bg-light border-top d-flex justify-content-between align-items-center flex-wrap small text-muted">
+                        <span id="visitCountLabel">Memuat kunjungan...</span>
+                        <span><i class="bi bi-shield-check text-success me-1"></i>Pelacakan otomatis berbasis Anonymous Unique Session</span>
+                    </div>
+                </div>
+
+                <!-- SECTION: STATUS & KESEHATAN SISTEM -->
+                <div class="modern-card mb-4 animate-fade-in" id="statistik">
+                    <div class="card-header-clean">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="p-2 rounded-3 bg-secondary bg-opacity-10 text-secondary">
+                                <i class="bi bi-speedometer2"></i>
+                            </span>
+                            <div>
+                                <h5 class="fw-bold mb-0" style="color: #0f172a;">Status & Kesehatan Sistem</h5>
+                                <small class="text-muted">Infrastruktur Supabase Kabupaten Blora</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3 small">
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded-3 bg-light d-flex justify-content-between align-items-center">
+                                    <span>Supabase Database Connection</span>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">Connected</span>
                                 </div>
                             </div>
-                            <div class="card-body p-4">
-                                <ul class="list-group list-group-flush small">
-                                    <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                                        <span>Supabase Database Connection</span>
-                                        <span class="badge bg-success-subtle text-success border border-success-subtle">Connected</span>
-                                    </li>
-                                    <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                                        <span>Supabase Row Level Security</span>
-                                        <span class="badge bg-success-subtle text-success border border-success-subtle">Enforced</span>
-                                    </li>
-                                    <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                                        <span>Penyimpanan Berkas Digital</span>
-                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Google Drive Centralized</span>
-                                    </li>
-                                </ul>
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded-3 bg-light d-flex justify-content-between align-items-center">
+                                    <span>Row Level Security (RLS)</span>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">Enforced</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded-3 bg-light d-flex justify-content-between align-items-center">
+                                    <span>Penyimpanan Berkas Digital</span>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Google Drive Centralized</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -762,12 +818,7 @@
     <!-- Supabase Module -->
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-        // =====================================================
-        // SUPABASE CONFIGURATION
-        // =====================================================
-        const SUPABASE_URL = 'https://gcyvuytalrsxkeiephbt.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjeXZ1eXRhbHJzeGtlaWVwaGJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkxNzk1MTUsImV4cCI6MjEwNDc1NTUxNX0.5LpwyZTprvuHaz6DYhJ3cfVh48E6c3z5RY2-QimgDeY';
+        import { SUPABASE_URL, SUPABASE_ANON_KEY } from './js/config.js';
 
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -843,23 +894,31 @@
         // =====================================================
         async function loadStatistics() {
             try {
-                const [libRes, bookRes, memRes, catRes] = await Promise.all([
+                const now = new Date();
+                const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+                const [libRes, bookRes, visitTotalRes, visitTodayRes, visitMonthRes] = await Promise.allSettled([
                     supabase.from('libraries').select('*', { count: 'exact', head: true }),
                     supabase.from('books').select('*', { count: 'exact', head: true }),
-                    supabase.from('members').select('*', { count: 'exact', head: true }),
-                    supabase.from('categories').select('*', { count: 'exact', head: true })
+                    supabase.from('library_visits').select('*', { count: 'exact', head: true }),
+                    supabase.from('library_visits').select('*', { count: 'exact', head: true }).gte('visited_at', startOfDay),
+                    supabase.from('library_visits').select('*', { count: 'exact', head: true }).gte('visited_at', startOfMonth)
                 ]);
 
-                const libCount = libRes.count || 0;
-                const bookCount = bookRes.count || 0;
-                const memCount = memRes.count || 0;
-                const catCount = catRes.count || 0;
+                const libCount = (libRes.status === 'fulfilled' && libRes.value.count) || 0;
+                const bookCount = (bookRes.status === 'fulfilled' && bookRes.value.count) || 0;
+                const visitTotal = (visitTotalRes.status === 'fulfilled' && visitTotalRes.value.count) || 0;
+                const visitToday = (visitTodayRes.status === 'fulfilled' && visitTodayRes.value.count) || 0;
+                const visitMonth = (visitMonthRes.status === 'fulfilled' && visitMonthRes.value.count) || 0;
 
-                document.getElementById('libraryCount').textContent = libCount;
-                document.getElementById('bookCount').textContent = bookCount;
-                document.getElementById('memberCount').textContent = memCount;
-                document.getElementById('categoryCount').textContent = catCount;
-                document.getElementById('memberSummaryCount').textContent = memCount;
+                if (document.getElementById('libraryCount')) document.getElementById('libraryCount').textContent = libCount;
+                if (document.getElementById('bookCount')) document.getElementById('bookCount').textContent = bookCount;
+                if (document.getElementById('totalVisitCount')) document.getElementById('totalVisitCount').textContent = visitTotal;
+                if (document.getElementById('todayVisitCount')) document.getElementById('todayVisitCount').textContent = visitToday;
+                if (document.getElementById('summaryTotalVisits')) document.getElementById('summaryTotalVisits').textContent = visitTotal;
+                if (document.getElementById('summaryTodayVisits')) document.getElementById('summaryTodayVisits').textContent = visitToday;
+                if (document.getElementById('summaryMonthVisits')) document.getElementById('summaryMonthVisits').textContent = visitMonth;
             } catch (err) {
                 console.error('Gagal mengambil statistik:', err);
             }
@@ -1390,6 +1449,198 @@
         };
 
         // =====================================================
+        // LOG KUNJUNGAN PEMUSTAKA (STEP REVISI)
+        // =====================================================
+        let allVisits = [];
+
+        window.loadVisits = async function() {
+            const tableBody = document.getElementById('visitTableBody');
+            if (!tableBody) return;
+
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">
+                        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                        Memuat data kunjungan pemustaka...
+                    </td>
+                </tr>
+            `;
+
+            try {
+                const { data: visits, error } = await supabase
+                    .from('library_visits')
+                    .select(`
+                        id, visitor_session_id, user_id, is_member, page_visited, user_agent, visited_at,
+                        libraries ( id, name, library_code ),
+                        books ( id, title )
+                    `)
+                    .order('visited_at', { ascending: false })
+                    .limit(100);
+
+                if (error) throw error;
+
+                allVisits = visits || [];
+                populateVisitLibraryFilter();
+                renderVisitsTable(allVisits);
+            } catch (err) {
+                console.error('Error loadVisits:', err);
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-danger">
+                            <i class="bi bi-exclamation-triangle me-2"></i> Gagal memuat data kunjungan: ${escapeHtml(err.message)}
+                        </td>
+                    </tr>
+                `;
+            }
+        };
+
+        function populateVisitLibraryFilter() {
+            const select = document.getElementById('visitLibraryFilter');
+            if (!select || select.dataset.populated === 'true') return;
+
+            const libMap = new Map();
+            allLibraries.forEach(l => {
+                if (l.id && l.name) libMap.set(l.id, l.name);
+            });
+            allVisits.forEach(v => {
+                if (v.libraries && v.libraries.id) {
+                    libMap.set(v.libraries.id, v.libraries.name);
+                }
+            });
+
+            select.innerHTML = '<option value="">Semua Perpustakaan (Termasuk Portal Utama)</option><option value="central">🏛️ Portal Utama Blora</option>';
+            libMap.forEach((name, id) => {
+                const opt = document.createElement('option');
+                opt.value = id;
+                opt.textContent = name;
+                select.appendChild(opt);
+            });
+            select.dataset.populated = 'true';
+        }
+
+        function renderVisitsTable(visits) {
+            const tableBody = document.getElementById('visitTableBody');
+            const countLabel = document.getElementById('visitCountLabel');
+            if (!tableBody) return;
+
+            if (!visits || visits.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <i class="bi bi-journal-x fs-2 d-block mb-2 text-secondary"></i>
+                            Belum ada riwayat kunjungan yang tercatat atau cocok dengan filter.
+                        </td>
+                    </tr>
+                `;
+                if (countLabel) countLabel.textContent = 'Menampilkan 0 kunjungan';
+                return;
+            }
+
+            tableBody.innerHTML = '';
+            visits.forEach(v => {
+                const tr = document.createElement('tr');
+
+                // Format Waktu
+                const dateObj = new Date(v.visited_at);
+                const timeStr = dateObj.toLocaleDateString('id-ID', {
+                    day: 'numeric', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                // Perpustakaan
+                let libName = 'Portal Utama Blora';
+                let libBadge = '<span class="badge bg-light text-primary border"><i class="bi bi-bank me-1"></i>Pusat</span>';
+                if (v.libraries && v.libraries.name) {
+                    libName = v.libraries.name;
+                    libBadge = `<span class="badge bg-light text-secondary border"><i class="bi bi-buildings me-1"></i>${escapeHtml(v.libraries.library_code || 'Mitra')}</span>`;
+                }
+
+                // Status Pengunjung
+                const isMember = !!v.is_member;
+                const statusBadge = isMember
+                    ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1"><i class="bi bi-person-check-fill me-1"></i>Anggota</span>`
+                    : `<span class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1"><i class="bi bi-person me-1"></i>Tamu / Non-Anggota</span>`;
+
+                // Halaman / Aktivitas
+                let activityDesc = '<span class="badge bg-light text-dark border">Buka Portal</span>';
+                if (v.page_visited === 'baca_buku') {
+                    const bookTitle = v.books?.title ? escapeHtml(v.books.title) : 'Buku Digital';
+                    activityDesc = `<span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-book me-1"></i>Membaca: ${bookTitle}</span>`;
+                } else if (v.page_visited === 'detail_buku') {
+                    const bookTitle = v.books?.title ? escapeHtml(v.books.title) : 'Buku Digital';
+                    activityDesc = `<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><i class="bi bi-info-circle me-1"></i>Detail: ${bookTitle}</span>`;
+                }
+
+                // Perangkat
+                let deviceIcon = 'bi-laptop';
+                let deviceName = 'Desktop / Laptop';
+                const ua = (v.user_agent || '').toLowerCase();
+                if (ua.includes('mobile') || ua.includes('android') || ua.includes('iphone')) {
+                    deviceIcon = 'bi-phone';
+                    deviceName = 'Smartphone';
+                }
+
+                tr.innerHTML = `
+                    <td>
+                        <div class="fw-semibold text-dark">${timeStr}</div>
+                        <small class="text-muted font-monospace" style="font-size: 0.72rem;">ID: ${escapeHtml((v.visitor_session_id || '').substring(0, 10))}...</small>
+                    </td>
+                    <td>
+                        <div class="fw-medium text-dark">${escapeHtml(libName)}</div>
+                        ${libBadge}
+                    </td>
+                    <td>${statusBadge}</td>
+                    <td>${activityDesc}</td>
+                    <td>
+                        <div class="small text-muted d-flex align-items-center gap-1">
+                            <i class="bi ${deviceIcon}"></i> ${deviceName}
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            if (countLabel) {
+                countLabel.textContent = `Menampilkan ${visits.length} kunjungan terbaru`;
+            }
+        }
+
+        // Live Filter Kunjungan
+        function applyVisitFilters() {
+            const query = (document.getElementById('visitSearchInput')?.value || '').toLowerCase().trim();
+            const libFilter = document.getElementById('visitLibraryFilter')?.value || '';
+            const typeFilter = document.getElementById('visitTypeFilter')?.value || '';
+
+            const filtered = allVisits.filter(v => {
+                if (typeFilter === 'guest' && v.is_member) return false;
+                if (typeFilter === 'member' && !v.is_member) return false;
+
+                if (libFilter === 'central') {
+                    if (v.libraries && v.libraries.id) return false;
+                } else if (libFilter && (!v.libraries || v.libraries.id !== libFilter)) {
+                    return false;
+                }
+
+                if (query) {
+                    const libName = (v.libraries?.name || 'Portal Utama Blora').toLowerCase();
+                    const bookTitle = (v.books?.title || '').toLowerCase();
+                    const page = (v.page_visited || '').toLowerCase();
+                    const ua = (v.user_agent || '').toLowerCase();
+                    const match = libName.includes(query) || bookTitle.includes(query) || page.includes(query) || ua.includes(query);
+                    if (!match) return false;
+                }
+
+                return true;
+            });
+
+            renderVisitsTable(filtered);
+        }
+
+        document.getElementById('visitSearchInput')?.addEventListener('input', applyVisitFilters);
+        document.getElementById('visitLibraryFilter')?.addEventListener('change', applyVisitFilters);
+        document.getElementById('visitTypeFilter')?.addEventListener('change', applyVisitFilters);
+
+        // =====================================================
         // UTILITY: REFRESH ALL & LOGOUT
         // =====================================================
         window.refreshAll = async function() {
@@ -1397,7 +1648,8 @@
                 loadStatistics(),
                 loadLibraries(),
                 loadCategories(),
-                loadBooks()
+                loadBooks(),
+                loadVisits()
             ]);
         };
 

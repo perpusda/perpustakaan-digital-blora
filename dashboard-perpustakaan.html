@@ -131,9 +131,9 @@
                         <i class="bi bi-grid-1x2"></i>
                         <span>Dashboard</span>
                     </a>
-                    <a href="#katalog">
+                    <a href="#koleksi">
                         <i class="bi bi-book"></i>
-                        <span>Koleksi Terpusat</span>
+                        <span>Dashboard Koleksi</span>
                     </a>
                     <a href="#informasi">
                         <i class="bi bi-info-circle"></i>
@@ -205,46 +205,96 @@
                     </div>
                 </div>
 
-                <!-- STATISTIK -->
-                <div class="row g-4 mb-4">
-                    <!-- Buku Tersedia (Dari Master Katalog books) -->
+                <!-- KARTU STATISTIK KUNJUNGAN PORTAL (REVISI: TOTAL, HARI INI, BULAN INI) -->
+                <div class="row g-4 mb-4" id="kunjungan">
+                    <!-- Total Kunjungan -->
                     <div class="col-md-4">
                         <div class="stat-card d-flex align-items-center justify-content-between">
                             <div>
-                                <div class="text-muted small fw-semibold text-uppercase">Buku Tersedia</div>
-                                <h3 class="fw-bold mt-2 mb-0" id="bookCount">0</h3>
-                                <small class="text-muted">Katalog Pusat Blora</small>
-                            </div>
-                            <div class="stat-icon bg-success-subtle text-success">
-                                <i class="bi bi-book"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Status Pembaca (Bebas Hambatan / Tanpa Anggota) -->
-                    <div class="col-md-4">
-                        <div class="stat-card d-flex align-items-center justify-content-between">
-                            <div>
-                                <div class="text-muted small fw-semibold text-uppercase">Akses Pembaca</div>
-                                <h4 class="fw-bold mt-2 mb-0 text-primary">Publik Bebas</h4>
-                                <small class="text-muted">Siapapun bisa langsung baca</small>
+                                <div class="text-muted small fw-semibold text-uppercase">Total Kunjungan</div>
+                                <h3 class="fw-bold mt-2 mb-0 text-primary" id="statTotalVisits">0</h3>
+                                <small class="text-muted">Seluruh Pengunjung Portal</small>
                             </div>
                             <div class="stat-icon bg-primary-subtle text-primary">
-                                <i class="bi bi-unlock"></i>
+                                <i class="bi bi-people-fill"></i>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Riwayat Pembacaan -->
+                    <!-- Kunjungan Hari Ini -->
                     <div class="col-md-4">
                         <div class="stat-card d-flex align-items-center justify-content-between">
                             <div>
-                                <div class="text-muted small fw-semibold text-uppercase">Buku Dibaca</div>
-                                <h3 class="fw-bold mt-2 mb-0" id="readingCount">0</h3>
-                                <small class="text-muted">Aktivitas membaca</small>
+                                <div class="text-muted small fw-semibold text-uppercase">Kunjungan Hari Ini</div>
+                                <h3 class="fw-bold mt-2 mb-0 text-success" id="statTodayVisits">0</h3>
+                                <small class="text-muted">Pengunjung Hari Ini</small>
                             </div>
-                            <div class="stat-icon bg-purple-subtle text-purple" style="background: #faf5ff; color: #9333ea;">
-                                <i class="bi bi-book-half"></i>
+                            <div class="stat-icon bg-success-subtle text-success">
+                                <i class="bi bi-calendar-check-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kunjungan Bulan Ini -->
+                    <div class="col-md-4">
+                        <div class="stat-card d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="text-muted small fw-semibold text-uppercase">Kunjungan Bulan Ini</div>
+                                <h3 class="fw-bold mt-2 mb-0" style="color: #7c3aed;" id="statMonthVisits">0</h3>
+                                <small class="text-muted">Bulan Berjalan</small>
+                            </div>
+                            <div class="stat-icon" style="background: #f5f3ff; color: #7c3aed;">
+                                <i class="bi bi-calendar3"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DASHBOARD KOLEKSI BUKU TERPUSAT -->
+                <div class="modern-card mb-4" id="koleksi">
+                    <div class="p-4 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div>
+                            <div class="d-flex align-items-center gap-2">
+                                <h5 class="fw-bold mb-0" style="color: #0f172a;">
+                                    <i class="bi bi-collection text-primary me-2"></i>Dashboard Koleksi Buku
+                                </h5>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill" id="catalogBadge">0 Judul Buku</span>
+                            </div>
+                            <p class="text-muted small mb-0 mt-1">Koleksi terpusat resmi Kabupaten Blora — siap dibaca langsung oleh pemustaka umum maupun anggota.</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <span class="badge bg-light text-dark border px-3 py-2 small">
+                                <i class="bi bi-tags text-primary me-1"></i> <span id="collectionCatCount">0</span> Kategori
+                            </span>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 small">
+                                <i class="bi bi-unlock me-1"></i> Akses Publik Bebas
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Filter & Search Toolbar Koleksi -->
+                    <div class="p-3 bg-light border-bottom">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-6 col-lg-7">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                                    <input type="text" class="form-control border-start-0" id="mitraSearchInput" placeholder="Cari judul buku, penulis, atau penerbit...">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-5">
+                                <select class="form-select" id="mitraCategorySelect">
+                                    <option value="">Semua Kategori Koleksi</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid Buku Koleksi -->
+                    <div class="p-4">
+                        <div class="row g-3" id="mitraBookList">
+                            <div class="col-12 text-center py-4 text-muted">
+                                <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                                Memuat koleksi buku pusat...
                             </div>
                         </div>
                     </div>
@@ -288,25 +338,6 @@
                             <div class="col-12">
                                 <span class="text-muted d-block">Alamat Lengkap</span>
                                 <div id="infoAddress">-</div>
-                            </div>
-                        </div>
-                    </div>
-                <!-- KOLEKSI BUKU TERPUSAT (ZERO REDUNDANCY) -->
-                <div class="modern-card mb-4" id="katalog">
-                    <div class="p-4 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
-                        <div>
-                            <h5 class="fw-bold mb-1" style="color: #0f172a;">
-                                <i class="bi bi-book text-primary me-2"></i>Koleksi Buku Terpusat Kabupaten Blora
-                            </h5>
-                            <p class="text-muted small mb-0">Seluruh buku disediakan oleh Admin Pusat Blora dan otomatis siap dibaca oleh seluruh anggota Anda.</p>
-                        </div>
-                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill" id="catalogBadge">0 Judul Buku</span>
-                    </div>
-                    <div class="p-4">
-                        <div class="row g-3" id="mitraBookList">
-                            <div class="col-12 text-center py-4 text-muted">
-                                <div class="spinner-border spinner-border-sm text-primary me-2"></div>
-                                Memuat koleksi buku pusat...
                             </div>
                         </div>
                     </div>
@@ -461,22 +492,36 @@
             document.getElementById('infoAddress').textContent = lib.address || '-';
 
             // 1. TAMPILKAN LANGSUNG KOLEKSI BUKU PUSAT TERLEBIH DAHULU (INSTANT LOAD)
+            currentLibSlug = libSlug;
             loadCentralBooks(libSlug);
 
-            // 2. LOAD STATISTIK SECARA ASINKRON (NON-BLOCKING)
+            // 2. LOAD STATISTIK KUNJUNGAN PORTAL (TOTAL, HARI INI, BULAN INI)
+            const now = new Date();
+            const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
             Promise.allSettled([
-                supabase.from('books').select('*', { count: 'exact', head: true }).eq('status', 'ACTIVE'),
-                supabase.from('members').select('*', { count: 'exact', head: true }).eq('library_id', lib.id),
-                supabase.from('reading_history').select('*', { count: 'exact', head: true }).eq('library_id', lib.id)
-            ]).then(([bookRes, memberRes, readingRes]) => {
-                if (bookRes.status === 'fulfilled' && bookRes.value.count !== undefined) {
-                    document.getElementById('bookCount').textContent = bookRes.value.count || 0;
+                // A. Total Kunjungan (Tamu/Umum & Anggota)
+                supabase.from('library_visits').select('*', { count: 'exact', head: true }).eq('library_id', lib.id),
+                // B. Kunjungan Hari Ini
+                supabase.from('library_visits').select('*', { count: 'exact', head: true }).eq('library_id', lib.id).gte('visited_at', startOfDay),
+                // C. Kunjungan Bulan Ini
+                supabase.from('library_visits').select('*', { count: 'exact', head: true }).eq('library_id', lib.id).gte('visited_at', startOfMonth)
+            ]).then(([totalRes, todayRes, monthRes]) => {
+                if (totalRes.status === 'fulfilled' && totalRes.value.count !== undefined) {
+                    document.getElementById('statTotalVisits').textContent = totalRes.value.count || 0;
                 }
-                if (readingRes.status === 'fulfilled' && readingRes.value.count !== undefined) {
-                    document.getElementById('readingCount').textContent = readingRes.value.count || 0;
+                if (todayRes.status === 'fulfilled' && todayRes.value.count !== undefined) {
+                    document.getElementById('statTodayVisits').textContent = todayRes.value.count || 0;
                 }
-            }).catch(e => console.warn('Stat load warning:', e));
+                if (monthRes.status === 'fulfilled' && monthRes.value.count !== undefined) {
+                    document.getElementById('statMonthVisits').textContent = monthRes.value.count || 0;
+                }
+            }).catch(e => console.warn('Visitor stats load warning:', e));
         }
+
+        let allCentralBooks = [];
+        let currentLibSlug = '';
 
         async function loadCentralBooks(libSlug) {
             const container = document.getElementById('mitraBookList');
@@ -493,54 +538,103 @@
 
                 if (error) throw error;
 
-                document.getElementById('catalogBadge').textContent = `${(books || []).length} Judul Buku`;
+                allCentralBooks = books || [];
+                document.getElementById('catalogBadge').textContent = `${allCentralBooks.length} Judul Buku`;
 
-                if (!books || books.length === 0) {
-                    container.innerHTML = `
-                        <div class="col-12 text-center py-4 text-muted">
-                            <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
-                            Belum ada katalog buku aktif dari Admin Pusat.
-                        </div>
-                    `;
-                    return;
+                // Hitung kategori unik & isi dropdown kategori
+                const categorySelect = document.getElementById('mitraCategorySelect');
+                const catMap = new Map();
+                allCentralBooks.forEach(b => {
+                    if (b.categories && b.categories.id) {
+                        catMap.set(b.categories.id, b.categories.name);
+                    }
+                });
+
+                document.getElementById('collectionCatCount').textContent = catMap.size;
+
+                if (categorySelect) {
+                    categorySelect.innerHTML = '<option value="">Semua Kategori Koleksi</option>';
+                    catMap.forEach((name, id) => {
+                        const opt = document.createElement('option');
+                        opt.value = id;
+                        opt.textContent = name;
+                        categorySelect.appendChild(opt);
+                    });
                 }
 
-                container.innerHTML = '';
-                books.forEach(b => {
-                    const col = document.createElement('div');
-                    col.className = 'col-sm-6 col-md-4 col-xl-3';
-                    const coverUrl = b.cover_file_id && b.cover_file_id.startsWith('http') ? b.cover_file_id : null;
-                    const coverHtml = coverUrl 
-                        ? `<img src="${coverUrl}" alt="${escapeHtml(b.title)}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px 8px 0 0;" onerror="this.outerHTML='<div class=\\\'p-4 text-center text-muted bg-light\\\' style=\\\'height:160px;\\\'>📚</div>'">`
-                        : `<div class="p-4 text-center text-muted bg-light d-flex align-items-center justify-content-center" style="height: 160px; border-radius: 8px 8px 0 0;"><i class="bi bi-book fs-1 text-secondary"></i></div>`;
-
-                    col.innerHTML = `
-                        <div class="card h-100 border rounded-3 overflow-hidden shadow-sm">
-                            ${coverHtml}
-                            <div class="card-body p-3 d-flex flex-column">
-                                <span class="badge bg-light text-primary border align-self-start mb-2" style="font-size: 0.7rem;">
-                                    ${escapeHtml(b.categories ? b.categories.name : 'Umum')}
-                                </span>
-                                <h6 class="fw-bold mb-1 text-truncate" title="${escapeHtml(b.title)}">${escapeHtml(b.title)}</h6>
-                                <p class="text-muted small mb-2 text-truncate">${escapeHtml(b.author || 'Penulis Anonim')}</p>
-                                <div class="mt-auto pt-2 border-top d-flex gap-2">
-                                    <a href="detail-buku.html?id=${b.id}${libSlug ? '&perpus=' + encodeURIComponent(libSlug) : ''}" target="_blank" class="btn btn-sm btn-outline-secondary flex-grow-1">
-                                        <i class="bi bi-info-circle"></i> Info
-                                    </a>
-                                    <a href="reader.html?book_id=${b.id}${libSlug ? '&perpus=' + encodeURIComponent(libSlug) : ''}" target="_blank" class="btn btn-sm btn-primary flex-grow-1">
-                                        <i class="bi bi-book"></i> Baca
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    container.appendChild(col);
-                });
+                renderMitraBooks(allCentralBooks);
             } catch (err) {
                 console.error(err);
                 container.innerHTML = `<div class="col-12 text-danger">Gagal memuat buku: ${err.message}</div>`;
             }
         }
+
+        function renderMitraBooks(books) {
+            const container = document.getElementById('mitraBookList');
+            if (!books || books.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-4 text-muted">
+                        <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+                        Tidak ada koleksi buku yang sesuai dengan pencarian atau filter.
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            books.forEach(b => {
+                const col = document.createElement('div');
+                col.className = 'col-sm-6 col-md-4 col-xl-3';
+                const coverUrl = b.cover_file_id && b.cover_file_id.startsWith('http') ? b.cover_file_id : null;
+                const coverHtml = coverUrl 
+                    ? `<img src="${coverUrl}" alt="${escapeHtml(b.title)}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px 8px 0 0;" onerror="this.outerHTML='<div class=\\\'p-4 text-center text-muted bg-light\\\' style=\\\'height:160px;\\\'>📚</div>'">`
+                    : `<div class="p-4 text-center text-muted bg-light d-flex align-items-center justify-content-center" style="height: 160px; border-radius: 8px 8px 0 0;"><i class="bi bi-book fs-1 text-secondary"></i></div>`;
+
+                col.innerHTML = `
+                    <div class="card h-100 border rounded-3 overflow-hidden shadow-sm">
+                        ${coverHtml}
+                        <div class="card-body p-3 d-flex flex-column">
+                            <span class="badge bg-light text-primary border align-self-start mb-2" style="font-size: 0.7rem;">
+                                ${escapeHtml(b.categories ? b.categories.name : 'Umum')}
+                            </span>
+                            <h6 class="fw-bold mb-1 text-truncate" title="${escapeHtml(b.title)}">${escapeHtml(b.title)}</h6>
+                            <p class="text-muted small mb-2 text-truncate">${escapeHtml(b.author || 'Penulis Anonim')}</p>
+                            <div class="mt-auto pt-2 border-top d-flex gap-2">
+                                <a href="detail-buku.html?id=${b.id}${currentLibSlug ? '&perpus=' + encodeURIComponent(currentLibSlug) : ''}" target="_blank" class="btn btn-sm btn-outline-secondary flex-grow-1">
+                                    <i class="bi bi-info-circle"></i> Info
+                                </a>
+                                <a href="reader.html?book_id=${b.id}${currentLibSlug ? '&perpus=' + encodeURIComponent(currentLibSlug) : ''}" target="_blank" class="btn btn-sm btn-primary flex-grow-1">
+                                    <i class="bi bi-book"></i> Baca
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(col);
+            });
+        }
+
+        // Live Filter Koleksi Mitra
+        function applyMitraFilters() {
+            const query = (document.getElementById('mitraSearchInput')?.value || '').toLowerCase().trim();
+            const catId = document.getElementById('mitraCategorySelect')?.value || '';
+
+            const filtered = allCentralBooks.filter(b => {
+                const matchCat = !catId || (b.categories && b.categories.id === catId);
+                const matchQuery = !query || (
+                    (b.title && b.title.toLowerCase().includes(query)) ||
+                    (b.author && b.author.toLowerCase().includes(query)) ||
+                    (b.publisher && b.publisher.toLowerCase().includes(query)) ||
+                    (b.isbn && b.isbn.toLowerCase().includes(query))
+                );
+                return matchCat && matchQuery;
+            });
+
+            renderMitraBooks(filtered);
+        }
+
+        document.getElementById('mitraSearchInput')?.addEventListener('input', applyMitraFilters);
+        document.getElementById('mitraCategorySelect')?.addEventListener('change', applyMitraFilters);
 
         document.getElementById('logoutBtn').addEventListener('click', async (e) => {
             e.preventDefault();
